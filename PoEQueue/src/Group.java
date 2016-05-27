@@ -6,6 +6,7 @@ public class Group {
 	private String type;
 	private String ID;
 	private String members;
+	private String date;
 	
 	
 	public Group() {

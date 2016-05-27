@@ -23,6 +23,15 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.SwingConstants;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JPanel;
+import javax.swing.border.MatteBorder;
+import java.awt.Color;
+import javax.swing.JSplitPane;
+import javax.swing.JButton;
+import javax.swing.JList;
 
 
 public class CurrentGroupWindow {
@@ -32,6 +41,12 @@ public class CurrentGroupWindow {
 	public static Group group;
 	
 	private JLabel lblTime;
+	
+	private String selectedMember = null;
+	
+	private JList memlist;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -64,43 +79,122 @@ public class CurrentGroupWindow {
 		frmCurrentGroup.setAutoRequestFocus(false);
 		frmCurrentGroup.setResizable(false);
 		frmCurrentGroup.setTitle("Current Group");
-		frmCurrentGroup.setBounds(100, 100, 220, 410);
+		frmCurrentGroup.setBounds(100, 100, 220, 291);
 		frmCurrentGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmCurrentGroup.setUndecorated(true);
 
 		frmCurrentGroup.setLocation(MainWindow.frmPoeQueue.getX()+MainWindow.frmPoeQueue.getWidth(),
 									MainWindow.frmPoeQueue.getY());
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		frmCurrentGroup.getContentPane().setLayout(gridBagLayout);
 		
 		lblTime = new JLabel("Time Spent in Group: ");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
-		GridBagConstraints gbc_lblTimeSpentIn = new GridBagConstraints();
-		gbc_lblTimeSpentIn.insets = new Insets(0, 0, 5, 5);
-		gbc_lblTimeSpentIn.gridx = 0;
-		gbc_lblTimeSpentIn.gridy = 0;
-		frmCurrentGroup.getContentPane().add(lblTime, gbc_lblTimeSpentIn);
 		
-//		Timer SimpleTimer = new Timer(1000, new ActionListener(){
-//		    @Override
-//		    public void actionPerformed(ActionEvent e) {
-//		        lblTime.setText(SimpleTime.format(new Date()));
-//		    }
-//		});
-//		SimpleTimer.start();
+		JLabel lblMembers = new JLabel("Members");
 		
-		JLabel lblMembers = new JLabel("Members:");
-		lblMembers.setHorizontalAlignment(SwingConstants.LEFT);
-		lblMembers.setVerticalAlignment(SwingConstants.TOP);
-		GridBagConstraints gbc_lblMembers = new GridBagConstraints();
-		gbc_lblMembers.insets = new Insets(0, 0, 0, 5);
-		gbc_lblMembers.gridx = 0;
-		gbc_lblMembers.gridy = 2;
-		frmCurrentGroup.getContentPane().add(lblMembers, gbc_lblMembers);
+		JLabel lblGroupId = new JLabel("Group ID");
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		
+		JButton btnPmMember = new JButton("PM Member");
+		btnPmMember.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CopyWindow.createWindow("@" + "membernamehere" + " hey heres the message");
+			}
+		});
+		
+		JButton btnPmLeader = new JButton("PM Leader");
+		btnPmLeader.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CopyWindow.createWindow("@" + "leaderhere" + " hey heres the message");
+			}
+		});
+		
+		JButton btnInviteMember = new JButton("Invite Member");
+		btnInviteMember.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CopyWindow.createWindow("/invite" + " " + "membernamehere");
+			}
+		});
+		
+		JLabel lblLeader = new JLabel("Leader: ");
+		
+		JButton btnLeave = new JButton("Leave");
+		btnLeave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainWindow.LeaveGroup();
+			}
+		});
+		
+		JButton btnKickMember = new JButton("Kick Member");
+		GroupLayout groupLayout = new GroupLayout(frmCurrentGroup.getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblTime)
+						.addComponent(lblGroupId)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblMembers))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(10)
+							.addComponent(panel, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+						.addComponent(lblLeader)
+						.addComponent(btnLeave)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(18)
+							.addComponent(btnPmMember)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnPmLeader, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnInviteMember)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnKickMember)))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(lblTime)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblGroupId)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblLeader)
+					.addGap(43)
+					.addComponent(lblMembers)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnPmLeader)
+						.addComponent(btnPmMember))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnInviteMember)
+						.addComponent(btnKickMember))
+					.addPreferredGap(ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+					.addComponent(btnLeave))
+		);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[]{100, 1, 0};
+		gbl_panel.rowHeights = new int[]{1, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		panel.setLayout(gbl_panel);
+		
+		memlist = new JList();
+		drawMemList();
+		
+		GridBagConstraints gbc_list = new GridBagConstraints();
+		gbc_list.gridwidth = 2;
+		gbc_list.insets = new Insets(0, 0, 0, 5);
+		gbc_list.fill = GridBagConstraints.BOTH;
+		gbc_list.gridx = 0;
+		gbc_list.gridy = 0;
+		panel.add(memlist, gbc_list);
+		frmCurrentGroup.getContentPane().setLayout(groupLayout);
 
 
 		Thread timer = new Thread(new Runnable() {
@@ -121,14 +215,14 @@ public class CurrentGroupWindow {
 			}
 		});
 		timer.start();
-
-
 		
+	}
+	
+	public void drawMemList() {
 		
 	}
 	
 	public static void closeFrame() {
 		frmCurrentGroup.dispose();
 	}
-
 }

@@ -61,11 +61,11 @@ public class MainWindow {
 	public static JFrame frmPoeQueue;
 	public ArrayList<Group> groups = new ArrayList<Group>();
 	public JList qList;
-	public Group currentGroup = null;
+	public static Group currentGroup = null;
 	
 	public JMenu menuUpdate;
-	public JMenu menuJoin;
-	public JMenu menuLeave;
+	public static JMenu menuJoin;
+	public static JMenu menuLeave;
 	
 	public Group selectedGroup = new Group();
 	
@@ -256,7 +256,7 @@ public class MainWindow {
 		}
 	}
 	
-	public void LeaveGroup() {
+	public static void LeaveGroup() {
 		if(currentGroup != null) {
 			currentGroup = null;
 			
