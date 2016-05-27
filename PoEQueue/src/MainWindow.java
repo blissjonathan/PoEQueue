@@ -69,6 +69,8 @@ public class MainWindow {
 	
 	public Group selectedGroup = new Group();
 	
+	private String username = null;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -208,6 +210,21 @@ public class MainWindow {
 		menuNewGroup.setIcon(new ImageIcon("./resources/new.png"));
 		menuNewGroup.setToolTipText("Create new group");
 		menuBar.add(menuNewGroup);
+		
+		JMenu menuSettings = new JMenu("");
+		menuSettings.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(username == null) {
+					SettingsWindow.createWindow("Username");
+				}
+				if(username != null) {
+					SettingsWindow.createWindow(username);
+				}
+			}
+		});
+		menuSettings.setIcon(new ImageIcon("./resources/settings.png"));
+		menuBar.add(menuSettings);
 	}
 
 	public void Update() {
@@ -254,5 +271,9 @@ public class MainWindow {
 			menuLeave.setIcon(new ImageIcon(grayIcon));
 			menuLeave.repaint();
 		}
+	}
+	
+	public static void SaveInfo(String username) {
+		
 	}
 }

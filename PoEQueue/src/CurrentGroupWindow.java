@@ -61,6 +61,7 @@ public class CurrentGroupWindow {
 	 */
 	private void initialize() {
 		frmCurrentGroup = new JFrame();
+		frmCurrentGroup.setAutoRequestFocus(false);
 		frmCurrentGroup.setResizable(false);
 		frmCurrentGroup.setTitle("Current Group");
 		frmCurrentGroup.setBounds(100, 100, 220, 410);
