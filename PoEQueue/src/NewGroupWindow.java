@@ -1,8 +1,11 @@
 import java.awt.EventQueue;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -10,13 +13,28 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.MatteBorder;
+
 import java.awt.Color;
 import java.awt.GridBagLayout;
+
 import javax.swing.JList;
+
 import java.awt.GridBagConstraints;
+
 import javax.swing.JButton;
+
+import com.mysql.jdbc.PreparedStatement;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+import java.util.StringTokenizer;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class NewGroupWindow {
@@ -24,12 +42,33 @@ public class NewGroupWindow {
 	private JFrame frmNewGroup;
 	private JTextField txtDescription;
 	private JPanel panel;
+	
+	private DefaultListModel listModel = new DefaultListModel();
 	private JList list;
+	
+	private String text;
+	
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private Date date = new Date();
+	private String dateData = dateFormat.format(date);
+	
+	 static Random r = new Random(10);
+	 static String Lid = Long.toString(Math.abs(r.nextLong()), 36);
+	 private static String leader = MainWindow.username + "-" + Lid;
+	 
+	 private int count = 0;
+	 
+	 private String members;
+	 
+	 private String type;
+	 
+	 public boolean isLeader = false;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void createWindow() {
+		System.out.println(leader);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -60,6 +99,14 @@ public class NewGroupWindow {
 		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		txtDescription = new JTextField();
+		txtDescription.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				  if (arg0.getKeyCode()==KeyEvent.VK_ENTER){
+					  text = txtDescription.getText();
+				    }
+			}
+		});
 		txtDescription.setText("Description");
 		txtDescription.setColumns(10);
 		
@@ -73,14 +120,62 @@ public class NewGroupWindow {
 		panel.setBorder(new TitledBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)), "Members", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		
 		JButton btnAddMember = new JButton("Add Member");
+		btnAddMember.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = JOptionPane.showInputDialog(null, "Member Name",
+				        "Add Member", JOptionPane.OK_CANCEL_OPTION);
+				if(name != null && !(name.isEmpty())) {
+					count++;
+					members += name + ",";
+					listModel.addElement(name);
+					list.repaint();
+					list.revalidate();
+				}
+			}
+		});
 		
 		JButton btnRemoveMember = new JButton("Remove Member");
 		btnRemoveMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(list.getSelectedValue() != null) {
+				listModel.remove(list.getSelectedIndex());
+				list.repaint();
+				list.revalidate();
+				
+				StringTokenizer st = new StringTokenizer(members,",");
+				while(st.hasMoreTokens()) {
+					String currentMember = st.nextToken();
+					if(currentMember.equals(list.getSelectedValue())) {
+						members = members.replace(currentMember, "");
+					}
+				}
+				
+				count--;
+				}
 			}
 		});
 		
 		JButton btnCreate = new JButton("Create");
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String query = "insert into groups (id, type, title, leader, members, date, count)"
+				        + " values (?, ?, ?, ?, ?, ?, ?)";
+				try {
+					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
+					st.setString(2,type);
+					st.setString(3, text);
+					st.setString(4, leader);
+					st.setString(5, members);
+					st.setString(6, dateData);
+					st.setInt(7, count);
+					st.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		
 		GroupLayout groupLayout = new GroupLayout(frmNewGroup.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -127,7 +222,7 @@ public class NewGroupWindow {
 		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
-		list = new JList();
+		list = new JList(listModel);
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.fill = GridBagConstraints.BOTH;
 		gbc_list.gridx = 0;

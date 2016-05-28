@@ -2,8 +2,13 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -74,6 +79,9 @@ public class MainWindow {
 	
 	public static String username = "test";
 	
+	public static ResultSet rs;
+	static Connection conn;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -86,7 +94,14 @@ public class MainWindow {
 					String url = "jdbc:mysql://localhost:3306/qlist?autoReconnect=true&useSSL=false";
 					String user = "root";
 					String password = "foobar";
-					Connection conn = (Connection) DriverManager.getConnection(url, user, password);
+					conn = (Connection) DriverManager.getConnection(url, user, password);
+					Statement stmt = (Statement) conn.createStatement();
+					rs = stmt.executeQuery("SELECT * FROM groups");
+					
+
+					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
+					username = content;
+					
 					
 					MainWindow window = new MainWindow();
 					window.frmPoeQueue.setVisible(true);
@@ -170,7 +185,7 @@ public class MainWindow {
 		menuUpdate = new JMenu("");
 		menuUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Update();
+				Update(rs);
 			}
 		});
 		menuUpdate.setIcon(new ImageIcon("./resources/refresh.png"));
@@ -243,10 +258,21 @@ public class MainWindow {
 		mnSortBy.add(mntmSearch);
 	}
 
-	public void Update() {
+	public void Update(ResultSet _rs) {
 		Thread refresh = new Thread(new Runnable() {
-			public void run() {
-				
+			public void run() {	
+				String fullRow = "";
+				ArrayList<String> groupList = new ArrayList<String>();
+				try {
+					while (rs.next()) {
+					    for (int i=1, y=0; i<8; i++, y++ ) {
+					        fullRow += rs.getString(i) +",";
+					    }
+					groupList.add(fullRow);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		refresh.start();
@@ -289,8 +315,14 @@ public class MainWindow {
 		}
 	}
 	
-	public static void SaveInfo(String username) {
-		
+	public static void SaveInfo(String _username) {
+		try {
+			PrintWriter out = new PrintWriter("./resources/data.txt");
+			out.println(_username);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
