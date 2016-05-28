@@ -63,13 +63,16 @@ public class MainWindow {
 	public JList qList;
 	public static Group currentGroup = null;
 	
+	private String setType;
+	private String searchText;
+	
 	public JMenu menuUpdate;
 	public static JMenu menuJoin;
 	public static JMenu menuLeave;
 	
 	public Group selectedGroup = new Group();
 	
-	private String username = null;
+	public static String username = "test";
 	
 	/**
 	 * Launch the application.
@@ -80,6 +83,10 @@ public class MainWindow {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					
+					String url = "jdbc:mysql://localhost:3306/qlist?autoReconnect=true&useSSL=false";
+					String user = "root";
+					String password = "foobar";
+					Connection conn = (Connection) DriverManager.getConnection(url, user, password);
 					
 					MainWindow window = new MainWindow();
 					window.frmPoeQueue.setVisible(true);
@@ -225,6 +232,15 @@ public class MainWindow {
 		});
 		menuSettings.setIcon(new ImageIcon("./resources/settings.png"));
 		menuBar.add(menuSettings);
+		
+		JMenu mnSortBy = new JMenu("Sort By...");
+		menuBar.add(mnSortBy);
+		
+		JMenuItem mntmType = new JMenuItem("Type");
+		mnSortBy.add(mntmType);
+		
+		JMenuItem mntmSearch = new JMenuItem("Search");
+		mnSortBy.add(mntmSearch);
 	}
 
 	public void Update() {
@@ -241,7 +257,7 @@ public class MainWindow {
 	}
 	
 	public void JoinGroup(Group selectedGroup) {
-		if(currentGroup == null) {
+		if(currentGroup == null && username != null) {
 			ImageFilter filter = new GrayFilter(true, 50);  
 			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuJoin.getIcon()).getImage().getSource(), filter);  
 			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
@@ -276,4 +292,5 @@ public class MainWindow {
 	public static void SaveInfo(String username) {
 		
 	}
+	
 }

@@ -64,6 +64,7 @@ public class SettingsWindow {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainWindow.SaveInfo(txtUsername.getText());
+				MainWindow.username = txtUsername.getText();
 				frmSettings.dispose();
 			}
 		});
