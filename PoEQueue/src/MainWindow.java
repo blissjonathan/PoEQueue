@@ -41,6 +41,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
@@ -65,7 +66,10 @@ public class MainWindow {
 
 	public static JFrame frmPoeQueue;
 	public ArrayList<Group> groups = new ArrayList<Group>();
-	public JList qList;
+	
+	private static DefaultListModel qModel = new DefaultListModel();
+	public static JList qList;
+	
 	public static Group currentGroup = null;
 	
 	private String setType;
@@ -150,6 +154,8 @@ public class MainWindow {
 		frmPoeQueue.getContentPane().add(scrollPane, gbc_scrollPane);
 		
 		qList = new JList();
+		qList.setModel(qModel);
+		Update(rs);
 		scrollPane.setViewportView(qList);
 		qList.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(0, 0, 0), Color.LIGHT_GRAY, Color.GRAY));
 		
@@ -258,21 +264,28 @@ public class MainWindow {
 		mnSortBy.add(mntmSearch);
 	}
 
-	public void Update(ResultSet _rs) {
+	public static void Update(ResultSet _rs) {
 		Thread refresh = new Thread(new Runnable() {
 			public void run() {	
 				String fullRow = "";
 				ArrayList<String> groupList = new ArrayList<String>();
 				try {
-					while (rs.next()) {
+					while (_rs.next()) {
 					    for (int i=1, y=0; i<8; i++, y++ ) {
-					        fullRow += rs.getString(i) +",";
+					        fullRow += _rs.getString(i) +",";
 					    }
 					groupList.add(fullRow);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				
+				for(int i = 0; i < groupList.size(); i++) {
+					qModel.addElement(groupList.get(i));
+					qList.repaint();
+					qList.revalidate();
+				}
+				
 			}
 		});
 		refresh.start();

@@ -46,7 +46,7 @@ public class NewGroupWindow {
 	private DefaultListModel listModel = new DefaultListModel();
 	private JList list;
 	
-	private String text;
+	private String text = "";
 	
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private Date date = new Date();
@@ -58,9 +58,11 @@ public class NewGroupWindow {
 	 
 	 private int count = 0;
 	 
-	 private String members;
+	 private String members = "";
 	 
-	 private String type;
+	 private String type = "Any";
+	 
+	 private String league = "Standard";
 	 
 	 public boolean isLeader = false;
 
@@ -111,9 +113,19 @@ public class NewGroupWindow {
 		txtDescription.setColumns(10);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				type = comboBox.getSelectedItem().toString();
+			}
+		});
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "Maps", "PvP", "Labyrinth", "Leveling"}));
 		
 		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				league = comboBox_1.getSelectedItem().toString();
+			}
+		});
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Standard", "Hardcore", "Standard Challenge", "Hardcore Challenge"}));
 		
 		panel = new JPanel();
@@ -124,7 +136,7 @@ public class NewGroupWindow {
 			public void actionPerformed(ActionEvent e) {
 				String name = JOptionPane.showInputDialog(null, "Member Name",
 				        "Add Member", JOptionPane.OK_CANCEL_OPTION);
-				if(name != null && !(name.isEmpty())) {
+				if(name != null && !(name.isEmpty()) && count <6) {
 					count++;
 					members += name + ",";
 					listModel.addElement(name);
@@ -158,20 +170,25 @@ public class NewGroupWindow {
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String query = "insert into groups (id, type, title, leader, members, date, count)"
-				        + " values (?, ?, ?, ?, ?, ?, ?)";
+				String query = "insert into groups (id, type, title, leader, members, date, count, league)"
+				        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 				try {
 					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
+					st.setInt(1, 0);
 					st.setString(2,type);
 					st.setString(3, text);
 					st.setString(4, leader);
 					st.setString(5, members);
 					st.setString(6, dateData);
 					st.setInt(7, count);
+					st.setString(8, league);
 					st.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				
+				MainWindow.Update(MainWindow.rs);
+				frmNewGroup.dispose();
 			}
 		});
 		
