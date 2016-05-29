@@ -10,10 +10,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.swing.JFrame;
 
 import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -60,6 +62,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
+import javax.swing.JRadioButton;
 
 
 public class MainWindow {
@@ -86,6 +89,12 @@ public class MainWindow {
 	public static ResultSet rs;
 	static Connection conn;
 	
+	public static UUID sessionID = UUID.randomUUID();
+	
+	
+	public static boolean isLeader = false;
+	private JTextField txtText;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -106,7 +115,17 @@ public class MainWindow {
 					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
 					username = content;
 					
+					Runtime.getRuntime().addShutdownHook(new Thread()
+					{
+					    @Override
+					    public void run()
+					    {
+					    	System.out.println("Quitting Application");
+					       LeaveGroup();
+					    }
+					});
 					
+					System.out.println("Session ID: " + sessionID);
 					MainWindow window = new MainWindow();
 					window.frmPoeQueue.setVisible(true);
 				} catch (Exception e) {
@@ -145,7 +164,7 @@ public class MainWindow {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 8;
+		gbc_scrollPane.gridwidth = 9;
 		gbc_scrollPane.gridheight = 11;
 		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
@@ -162,11 +181,10 @@ public class MainWindow {
 		JPanel InfoPane = new JPanel();
 		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		GridBagConstraints gbc_InfoPane = new GridBagConstraints();
-		gbc_InfoPane.gridwidth = 2;
 		gbc_InfoPane.gridheight = 11;
 		gbc_InfoPane.insets = new Insets(0, 0, 5, 0);
 		gbc_InfoPane.fill = GridBagConstraints.BOTH;
-		gbc_InfoPane.gridx = 8;
+		gbc_InfoPane.gridx = 9;
 		gbc_InfoPane.gridy = 0;
 		frmPoeQueue.getContentPane().add(InfoPane, gbc_InfoPane);
 		GridBagLayout gbl_InfoPane = new GridBagLayout();
@@ -257,11 +275,35 @@ public class MainWindow {
 		JMenu mnSortBy = new JMenu("Sort By...");
 		menuBar.add(mnSortBy);
 		
-		JMenuItem mntmType = new JMenuItem("Type");
-		mnSortBy.add(mntmType);
+		JMenu mnType = new JMenu("Type");
+		mnSortBy.add(mnType);
 		
-		JMenuItem mntmSearch = new JMenuItem("Search");
-		mnSortBy.add(mntmSearch);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "PvP", "Maps", "Leveling"}));
+		mnType.add(comboBox);
+		
+		JMenu mnSearch = new JMenu("Search");
+		mnSortBy.add(mnSearch);
+		
+		txtText = new JTextField();
+		txtText.setText("Text");
+		mnSearch.add(txtText);
+		txtText.setColumns(10);
+		
+		JMenu mnLeague = new JMenu("League");
+		mnSortBy.add(mnLeague);
+		
+		JRadioButton rdbtnStandard = new JRadioButton("Standard");
+		mnLeague.add(rdbtnStandard);
+		
+		JRadioButton rdbtnHardcore = new JRadioButton("Hardcore");
+		mnLeague.add(rdbtnHardcore);
+		
+		JRadioButton rdbtnChallengeStandard = new JRadioButton("Challenge Standard");
+		mnLeague.add(rdbtnChallengeStandard);
+		
+		JRadioButton rdbtnChallengeHardcore = new JRadioButton("Challenge Hardcore");
+		mnLeague.add(rdbtnChallengeHardcore);
 	}
 
 	public static void Update(ResultSet _rs) {
@@ -325,6 +367,24 @@ public class MainWindow {
 			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
 			menuLeave.setIcon(new ImageIcon(grayIcon));
 			menuLeave.repaint();
+			
+			
+			if(isLeader == true) {
+			String query = "DELETE FROM groups WHERE leader = '"+NewGroupWindow.leader+"' ";
+			try {
+				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+				st.execute();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			isLeader = false;
+			} else {
+			String query = "";
+			
+			
+			}
+			
 		}
 	}
 	

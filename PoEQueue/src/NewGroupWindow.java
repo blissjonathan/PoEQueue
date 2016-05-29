@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -54,11 +55,11 @@ public class NewGroupWindow {
 	
 	 static Random r = new Random(10);
 	 static String Lid = Long.toString(Math.abs(r.nextLong()), 36);
-	 private static String leader = MainWindow.username + "-" + Lid;
+	 public static String leader = MainWindow.username + "-" + Lid;
 	 
 	 private int count = 0;
 	 
-	 private String members = "";
+	 private ArrayList<String> members = new ArrayList<String>();
 	 
 	 private String type = "Any";
 	 
@@ -134,11 +135,11 @@ public class NewGroupWindow {
 		JButton btnAddMember = new JButton("Add Member");
 		btnAddMember.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String name = JOptionPane.showInputDialog(null, "Member Name",
+				String name = JOptionPane.showInputDialog(null, "Member ID",
 				        "Add Member", JOptionPane.OK_CANCEL_OPTION);
-				if(name != null && !(name.isEmpty()) && count <6) {
+				if(name != null && !(name.isEmpty()) && count <5) {
 					count++;
-					members += name + ",";
+					members.add(name);
 					listModel.addElement(name);
 					list.repaint();
 					list.revalidate();
@@ -154,13 +155,17 @@ public class NewGroupWindow {
 				list.repaint();
 				list.revalidate();
 				
-				StringTokenizer st = new StringTokenizer(members,",");
-				while(st.hasMoreTokens()) {
-					String currentMember = st.nextToken();
-					if(currentMember.equals(list.getSelectedValue())) {
-						members = members.replace(currentMember, "");
-					}
+				if(members.contains(list.getSelectedValue())) {
+					members.remove(list.getSelectedValue());
 				}
+				
+				String query = "";
+				try {
+					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
 				
 				count--;
 				}
@@ -170,24 +175,30 @@ public class NewGroupWindow {
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String query = "insert into groups (id, type, title, leader, members, date, count, league)"
+				String query = "insert into groups (id, type, title, date, count, league, leader,"
+						+ "member1, member2, member3, member4, member5)"
 				        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 				try {
 					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
 					st.setInt(1, 0);
 					st.setString(2,type);
 					st.setString(3, text);
-					st.setString(4, leader);
-					st.setString(5, members);
-					st.setString(6, dateData);
-					st.setInt(7, count);
-					st.setString(8, league);
+					st.setString(4, dateData);
+					st.setInt(5, count);
+					st.setString(6, league);
+					st.setString(7, leader);
+					st.setString(8, members.get(0));
+					st.setString(9, members.get(1));
+					st.setString(10, members.get(2));
+					st.setString(11, members.get(3));
+					st.setString(12, members.get(4));
 					st.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 				
 				MainWindow.Update(MainWindow.rs);
+				MainWindow.isLeader = true;
 				frmNewGroup.dispose();
 			}
 		});
