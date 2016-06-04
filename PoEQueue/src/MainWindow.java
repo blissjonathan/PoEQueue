@@ -43,11 +43,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -66,6 +68,9 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 
 import javax.swing.JRadioButton;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 
 public class MainWindow {
@@ -100,6 +105,7 @@ public class MainWindow {
 	private JTextField searchField;
 	
 	public static ArrayList<String> groupList = new ArrayList<String>();
+	private JTextField textField;
 	
 	
 	/**
@@ -184,6 +190,13 @@ public class MainWindow {
 		
 		qList = new JList();
 		qList.setModel(qModel);
+		
+		qList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		
 		Update(rs);
 		scrollPane.setViewportView(qList);
 		qList.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(0, 0, 0), Color.LIGHT_GRAY, Color.GRAY));
@@ -191,18 +204,62 @@ public class MainWindow {
 		JPanel InfoPane = new JPanel();
 		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		GridBagConstraints gbc_InfoPane = new GridBagConstraints();
-		gbc_InfoPane.gridheight = 11;
+		InfoPane.setPreferredSize(new Dimension(25,100));
+		gbc_InfoPane.gridheight = 6;
+		gbc_InfoPane.gridwidth = 3;
 		gbc_InfoPane.insets = new Insets(0, 0, 5, 0);
 		gbc_InfoPane.fill = GridBagConstraints.BOTH;
 		gbc_InfoPane.gridx = 9;
 		gbc_InfoPane.gridy = 0;
 		frmPoeQueue.getContentPane().add(InfoPane, gbc_InfoPane);
-		GridBagLayout gbl_InfoPane = new GridBagLayout();
-		gbl_InfoPane.columnWidths = new int[]{0, 0};
-		gbl_InfoPane.rowHeights = new int[]{0, 0, 0};
-		gbl_InfoPane.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_InfoPane.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		InfoPane.setLayout(gbl_InfoPane);
+		
+		JLabel lblLeader = new JLabel("Leader: ");
+		
+		JLabel lblType = new JLabel("Type: ");
+		
+		JLabel lblLeague = new JLabel("League: ");
+		
+		JLabel lblMembers = new JLabel("Members: ");
+		
+		JLabel lblDescription = new JLabel("Description: ");
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setColumns(10);
+		
+		JButton btnJoin = new JButton("Join");
+		GroupLayout gl_InfoPane = new GroupLayout(InfoPane);
+		gl_InfoPane.setHorizontalGroup(
+			gl_InfoPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_InfoPane.createSequentialGroup()
+					.addGroup(gl_InfoPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblLeader)
+						.addComponent(lblType)
+						.addComponent(lblLeague)
+						.addComponent(lblMembers)
+						.addComponent(lblDescription)
+						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+						.addComponent(btnJoin))
+					.addContainerGap())
+		);
+		gl_InfoPane.setVerticalGroup(
+			gl_InfoPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_InfoPane.createSequentialGroup()
+					.addComponent(lblLeader)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblType)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblLeague)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblMembers)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblDescription)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+					.addComponent(btnJoin))
+		);
+		InfoPane.setLayout(gl_InfoPane);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmPoeQueue.setJMenuBar(menuBar);
@@ -288,23 +345,76 @@ public class MainWindow {
 		JMenu mnType = new JMenu("Type");
 		mnSortBy.add(mnType);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "PvP", "Maps", "Leveling"}));
-		comboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Sorting by " + comboBox.getSelectedItem().toString());
-				SortByType(comboBox.getSelectedItem().toString());
+		JMenuItem mntmAny = new JMenuItem("Any");
+		mntmAny.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmAny.getText());
+				SortByType(mntmAny.getText());
 				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
-
 			}
 		});
-
-		mnType.add(comboBox);
+		mnType.add(mntmAny);
+		
+		JMenuItem mntmPvp = new JMenuItem("PvP");
+		mntmPvp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmPvp.getText());
+				SortByType(mntmPvp.getText());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+		});
+		mnType.add(mntmPvp);
+		
+		JMenuItem mntmMaps = new JMenuItem("Maps");
+		mntmMaps.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmMaps.getText());
+				SortByType(mntmMaps.getText());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+		});
+		mnType.add(mntmMaps);
+		
+		JMenuItem mntmLeveling = new JMenuItem("Leveling");
+		mntmLeveling.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmLeveling.getText());
+				SortByType(mntmLeveling.getText());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+		});
+		mnType.add(mntmLeveling);
+		
+		JMenuItem mntmLab = new JMenuItem("Lab");
+		mntmLab.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmLab.getText());
+				SortByType(mntmLab.getText());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+		});
+		mnType.add(mntmLab);
+		
+		JMenuItem mntmMisc = new JMenuItem("Misc");
+		mntmMisc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmMisc.getText());
+				SortByType(mntmMisc.getText());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+		});
+		mnType.add(mntmMisc);
 		
 		JMenu mnSearch = new JMenu("Search");
 		mnSortBy.add(mnSearch);
 		
 		searchField = new JTextField();
+		searchField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				searchField.selectAll();
+			}
+		});
 		searchField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -333,6 +443,17 @@ public class MainWindow {
 		
 		JRadioButton rdbtnChallengeHardcore = new JRadioButton("Challenge Hardcore");
 		mnLeague.add(rdbtnChallengeHardcore);
+		
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+		
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		mnHelp.add(mntmAbout);
 	}
 
 	public static void Update(ResultSet _rs) {
@@ -384,10 +505,20 @@ public class MainWindow {
 			
 			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
 			
-			CurrentGroupWindow.createWindow(selectedGroup);
+			CurrentGroupWindow.createWindow(qList.getSelectedValue().toString());
+			
+			String query = "UPDATE groups SET count = count + 1 WHERE leader = " + leaderID + "AND count < 6";
+			
+			try {
+				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+				st.execute();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			
 			
-			
+		} else if(username == null) {
+			JOptionPane.showMessageDialog(frmPoeQueue, "Please enter username in settings.");
 		}
 	}
 	
@@ -407,6 +538,7 @@ public class MainWindow {
 			
 			
 			if(isLeader == true) {
+				
 			String query = "DELETE FROM groups WHERE leader = '"+sessionID+"' ";
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -416,9 +548,17 @@ public class MainWindow {
 			}
 			
 			isLeader = false;
-			} else if(isLeader == false){
-			String query = "";
 			
+			} else if(isLeader == false){
+				
+			String query = "UPDATE groups SET count = count - 1 WHERE leader = " + leaderID + "AND count > 0";
+			
+			try {
+				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+				st.execute();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			
 			}
 			
@@ -456,8 +596,12 @@ public class MainWindow {
 	public void SortByType(String input) {
 		Thread sort = new Thread(){
 		    public void run(){
-		    String query = "SELECT * FROM groups WHERE type = '"+input+"'";
-				
+		    String query = "";
+		    if(input.equals("Any")) {
+			query = "SELECT * FROM groups";
+		    } else if(!(input.equals("Any"))) {
+		    query = "SELECT * FROM groups WHERE type = '"+input+"'";
+		    }
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 					ResultSet result = st.executeQuery();

@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 
 
 
+
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
@@ -21,6 +22,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import javax.swing.SwingConstants;
 import javax.swing.GroupLayout;
@@ -28,11 +30,15 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
+
 import java.awt.Color;
+
 import javax.swing.JSplitPane;
 import javax.swing.JButton;
 import javax.swing.JList;
+
 import java.awt.Font;
+
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
@@ -41,19 +47,41 @@ public class CurrentGroupWindow {
 
 	private static JFrame frmCurrentGroup;
 	
-	public static Group group;
+	public static String group;
 	
 	private JLabel lblTime;
 	
 	private String selectedMember = null;
 	private JTextField textField;
 	
-	
+	private static String count;
+	private static String id;
+	private static String leader;
+	private static String title;
+	private static String league;
+	private static String type;
+	private static String date;
+	private static String session;
 	/**
 	 * Launch the application.
 	 */
-	public static void createWindow(Group _group) {
+	public static void createWindow(String _group) {
 		group = _group;
+		
+		StringTokenizer st = new StringTokenizer(group, ", ");
+		id = st.nextToken();
+		type = st.nextToken();
+		title = st.nextToken();
+		date = st.nextToken();
+		count = st.nextToken();
+		StringTokenizer leaderST = new StringTokenizer(st.nextToken(), ":");
+		session = leaderST.nextToken();
+		if(leaderST.hasMoreTokens()) {
+		leader = leaderST.nextToken();
+		}
+		
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -91,18 +119,18 @@ public class CurrentGroupWindow {
 		lblTime = new JLabel("Time Spent in Group: ");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JLabel lblMembers = new JLabel("Members:");
+		JLabel lblMembers = new JLabel("Members: " + count);
 		
-		JLabel lblGroupId = new JLabel("Group ID:");
+		JLabel lblGroupId = new JLabel("Group ID: " + id);
 		
 		JButton btnPmLeader = new JButton("PM Leader");
 		btnPmLeader.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CopyWindow.createWindow("@" + "leaderhere" + " hey heres the message");
+				CopyWindow.createWindow("@" + leader + " Hello, I have joined your group on PoE queue. I'm ready for my invite.");
 			}
 		});
 		
-		JLabel lblLeader = new JLabel("Leader: ");
+		JLabel lblLeader = new JLabel("Leader: " + leader);
 		
 		JButton btnLeave = new JButton("Leave");
 		btnLeave.addActionListener(new ActionListener() {
@@ -124,6 +152,7 @@ public class CurrentGroupWindow {
 		JLabel lblDescription = new JLabel("Description:");
 		
 		textField = new JTextField();
+		textField.setText(title);
 		textField.setColumns(10);
 		
 		JButton btnUpdate = new JButton("Update");

@@ -36,6 +36,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -64,6 +65,8 @@ public class NewGroupWindow {
 	 private String league = "Standard";
 	 
 	 public boolean isLeader = false;
+	 
+	 JSpinner spinner;
 
 	/**
 	 * Launch the application.
@@ -116,7 +119,7 @@ public class NewGroupWindow {
 				type = comboBox.getSelectedItem().toString();
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "Maps", "PvP", "Labyrinth", "Leveling"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "Maps", "PvP", "Labyrinth", "Leveling", "Misc"}));
 		
 		JComboBox comboBox_1 = new JComboBox();
 		comboBox_1.addActionListener(new ActionListener() {
@@ -134,11 +137,12 @@ public class NewGroupWindow {
 				try {
 					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
 					st.setInt(1, 0);
-					st.setString(2,type);
-					st.setString(3, text);
+					st.setString(2, comboBox.getSelectedItem().toString());
+					st.setString(3, txtDescription.getText());
 					st.setString(4, dateData);
-					st.setInt(5, count);
-					st.setString(6, league);
+					st.setString(5, spinner.getValue().toString());
+					st.setString(6, comboBox_1.getSelectedItem().toString());
+					st.setString(7, MainWindow.sessionID + ":" + MainWindow.username);
 					st.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -152,7 +156,7 @@ public class NewGroupWindow {
 		
 		JLabel lblNoOfMembers = new JLabel("No. of members in group");
 		
-		JSpinner spinner = new JSpinner();
+		spinner = new JSpinner();
 		spinner.setModel(new SpinnerNumberModel(0, 0, 5, 1));
 		
 		
@@ -193,12 +197,6 @@ public class NewGroupWindow {
 					.addContainerGap(157, Short.MAX_VALUE))
 		);
 		
-//		list = new JList(listModel);
-//		GridBagConstraints gbc_list = new GridBagConstraints();
-//		gbc_list.fill = GridBagConstraints.BOTH;
-//		gbc_list.gridx = 0;
-//		gbc_list.gridy = 0;
-//		panel.add(list, gbc_list);
 		frmNewGroup.getContentPane().setLayout(groupLayout);
 	}
 }
