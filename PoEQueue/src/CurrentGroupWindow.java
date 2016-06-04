@@ -32,6 +32,9 @@ import java.awt.Color;
 import javax.swing.JSplitPane;
 import javax.swing.JButton;
 import javax.swing.JList;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JSeparator;
 
 
 public class CurrentGroupWindow {
@@ -43,8 +46,7 @@ public class CurrentGroupWindow {
 	private JLabel lblTime;
 	
 	private String selectedMember = null;
-	
-	private JList memlist;
+	private JTextField textField;
 	
 	
 	/**
@@ -79,7 +81,7 @@ public class CurrentGroupWindow {
 		frmCurrentGroup.setAutoRequestFocus(false);
 		frmCurrentGroup.setResizable(false);
 		frmCurrentGroup.setTitle("Current Group");
-		frmCurrentGroup.setBounds(100, 100, 220, 291);
+		frmCurrentGroup.setBounds(100, 100, 220, 325);
 		frmCurrentGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmCurrentGroup.setUndecorated(true);
 
@@ -89,31 +91,14 @@ public class CurrentGroupWindow {
 		lblTime = new JLabel("Time Spent in Group: ");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		
-		JLabel lblMembers = new JLabel("Members");
+		JLabel lblMembers = new JLabel("Members:");
 		
-		JLabel lblGroupId = new JLabel("Group ID");
-		
-		JPanel panel = new JPanel();
-		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		
-		JButton btnPmMember = new JButton("PM Member");
-		btnPmMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CopyWindow.createWindow("@" + "membernamehere" + " hey heres the message");
-			}
-		});
+		JLabel lblGroupId = new JLabel("Group ID:");
 		
 		JButton btnPmLeader = new JButton("PM Leader");
 		btnPmLeader.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CopyWindow.createWindow("@" + "leaderhere" + " hey heres the message");
-			}
-		});
-		
-		JButton btnInviteMember = new JButton("Invite Member");
-		btnInviteMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CopyWindow.createWindow("/invite" + " " + "membernamehere");
 			}
 		});
 		
@@ -126,32 +111,66 @@ public class CurrentGroupWindow {
 			}
 		});
 		
-		JButton btnKickMember = new JButton("Kick Member");
+		JButton btnKickMember = new JButton("Remove Member");
+		
+		JButton btnAddMember = new JButton("Add Member");
+		btnAddMember.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		
+		JSeparator separator = new JSeparator();
+		
+		JLabel lblLeaderControls = new JLabel("Leader Controls");
+		lblLeaderControls.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JLabel lblDescription = new JLabel("Description:");
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		
+		JButton btnUpdate = new JButton("Update");
+		
+		if(MainWindow.isLeader == false) {
+			btnAddMember.setEnabled(false);
+			btnKickMember.setEnabled(false);
+			textField.setEditable(false);
+			btnUpdate.setEnabled(false);
+		}
+		
+		JSeparator separator_1 = new JSeparator();
 		GroupLayout groupLayout = new GroupLayout(frmCurrentGroup.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblTime)
-						.addComponent(lblGroupId)
+					.addComponent(lblLeaderControls)
+					.addContainerGap())
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblMembers))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(10)
-							.addComponent(panel, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
-						.addComponent(lblLeader)
-						.addComponent(btnLeave)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(18)
-							.addComponent(btnPmMember)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnPmLeader, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(btnInviteMember)
-							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblDescription)
+							.addPreferredGap(ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+							.addComponent(btnUpdate)))
+					.addGap(29))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(btnLeave)
+					.addContainerGap(171, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblTime, Alignment.LEADING)
+						.addComponent(lblGroupId, Alignment.LEADING)
+						.addComponent(lblLeader, Alignment.LEADING)
+						.addComponent(lblMembers, Alignment.LEADING)
+						.addComponent(btnPmLeader, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(btnAddMember, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+							.addGap(6)
 							.addComponent(btnKickMember)))
+					.addGap(26))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(separator_1, GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -162,38 +181,31 @@ public class CurrentGroupWindow {
 					.addComponent(lblGroupId)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblLeader)
-					.addGap(43)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblMembers)
+					.addGap(2)
+					.addComponent(btnPmLeader)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnPmLeader)
-						.addComponent(btnPmMember))
+					.addComponent(lblLeaderControls)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnInviteMember)
-						.addComponent(btnKickMember))
-					.addPreferredGap(ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-					.addComponent(btnLeave))
+						.addComponent(lblDescription)
+						.addComponent(btnUpdate))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+					.addGap(20)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnAddMember)
+						.addComponent(btnKickMember, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+					.addGap(16)
+					.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnLeave)
+					.addContainerGap())
 		);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{100, 1, 0};
-		gbl_panel.rowHeights = new int[]{1, 0};
-		gbl_panel.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
-		
-		memlist = new JList();
 		drawMemList();
-		
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.gridwidth = 2;
-		gbc_list.insets = new Insets(0, 0, 0, 5);
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 0;
-		gbc_list.gridy = 0;
-		panel.add(memlist, gbc_list);
 		frmCurrentGroup.getContentPane().setLayout(groupLayout);
 
 

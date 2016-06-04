@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -43,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
@@ -62,6 +64,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
+
 import javax.swing.JRadioButton;
 
 
@@ -73,7 +76,7 @@ public class MainWindow {
 	private static DefaultListModel qModel = new DefaultListModel();
 	public static JList qList;
 	
-	public static Group currentGroup = null;
+	public static boolean currentGroup = false;
 	
 	private String setType;
 	private String searchText;
@@ -90,10 +93,14 @@ public class MainWindow {
 	static Connection conn;
 	
 	public static UUID sessionID = UUID.randomUUID();
-	
+	public static int leaderID = 0;
 	
 	public static boolean isLeader = false;
-	private JTextField txtText;
+	
+	private JTextField searchField;
+	
+	public static ArrayList<String> groupList = new ArrayList<String>();
+	
 	
 	/**
 	 * Launch the application.
@@ -109,7 +116,7 @@ public class MainWindow {
 					String password = "foobar";
 					conn = (Connection) DriverManager.getConnection(url, user, password);
 					Statement stmt = (Statement) conn.createStatement();
-					rs = stmt.executeQuery("SELECT * FROM groups");
+					rs = stmt.executeQuery("SELECT type, title, date, count, league FROM groups");
 					
 
 					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
@@ -121,7 +128,7 @@ public class MainWindow {
 					    public void run()
 					    {
 					    	System.out.println("Quitting Application");
-					       LeaveGroup();
+					        LeaveGroup();
 					    }
 					});
 					
@@ -163,6 +170,9 @@ public class MainWindow {
 		frmPoeQueue.getContentPane().setLayout(gridBagLayout);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		JLabel label = new JLabel("Type, Description, Date, # of members, League", JLabel.LEFT);
+		label.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		scrollPane.setColumnHeaderView(label);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 9;
 		gbc_scrollPane.gridheight = 11;
@@ -233,7 +243,7 @@ public class MainWindow {
 		menuLeave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(currentGroup != null) {
+				if(currentGroup == true) {
 				LeaveGroup();
 				}
 			}
@@ -279,16 +289,29 @@ public class MainWindow {
 		mnSortBy.add(mnType);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SortByType(comboBox.getSelectedItem().toString());
+			}
+		});
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "PvP", "Maps", "Leveling"}));
 		mnType.add(comboBox);
 		
 		JMenu mnSearch = new JMenu("Search");
 		mnSortBy.add(mnSearch);
 		
-		txtText = new JTextField();
-		txtText.setText("Text");
-		mnSearch.add(txtText);
-		txtText.setColumns(10);
+		searchField = new JTextField();
+		searchField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				  if (arg0.getKeyCode()==KeyEvent.VK_ENTER){
+//					  SortByText(searchField.getText());
+				    }
+			}
+		});
+		searchField.setText("Text");
+		mnSearch.add(searchField);
+		searchField.setColumns(10);
 		
 		JMenu mnLeague = new JMenu("League");
 		mnSortBy.add(mnLeague);
@@ -309,25 +332,41 @@ public class MainWindow {
 	public static void Update(ResultSet _rs) {
 		Thread refresh = new Thread(new Runnable() {
 			public void run() {	
-				String fullRow = "";
-				ArrayList<String> groupList = new ArrayList<String>();
+//				String fullRow = "";
+//				ArrayList<String> groupList = new ArrayList<String>();
+//				try {
+//					while (_rs.next()) {
+//					    for (int i=1, y=0; i<; i++, y++ ) {
+//					        fullRow += _rs.getString(i) +",";
+//					    }
+//					groupList.add(fullRow);
+//					}
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+				java.sql.ResultSetMetaData rsmd;
 				try {
-					while (_rs.next()) {
-					    for (int i=1, y=0; i<8; i++, y++ ) {
-					        fullRow += _rs.getString(i) +",";
+					rsmd = _rs.getMetaData();
+					 int columnsNumber = rsmd.getColumnCount();
+					    while (rs.next()) {
+					    	String tempRow = "";
+					        for (int i = 1; i <= columnsNumber; i++) {
+					            String columnValue = rs.getString(i);
+					            tempRow += (columnValue + ", ");					            
+					        }
+					        tempRow = tempRow.substring(0,tempRow.length()-2);
+					        groupList.add(tempRow);
 					    }
-					groupList.add(fullRow);
-					}
+						
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				
+			   
 				for(int i = 0; i < groupList.size(); i++) {
 					qModel.addElement(groupList.get(i));
-					qList.repaint();
-					qList.revalidate();
 				}
-				
+				qList.repaint();
+				qList.revalidate();
 			}
 		});
 		refresh.start();
@@ -337,8 +376,9 @@ public class MainWindow {
 		
 	}
 	
-	public void JoinGroup(Group selectedGroup) {
-		if(currentGroup == null && username != null) {
+	public static void JoinGroup(Group selectedGroup) {
+		if(currentGroup == false && username != null) {
+			currentGroup = true;
 			ImageFilter filter = new GrayFilter(true, 50);  
 			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuJoin.getIcon()).getImage().getSource(), filter);  
 			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
@@ -349,14 +389,14 @@ public class MainWindow {
 			
 			CurrentGroupWindow.createWindow(selectedGroup);
 			
-			currentGroup = selectedGroup;
+			
+			
 		}
 	}
 	
 	public static void LeaveGroup() {
-		if(currentGroup != null) {
-			currentGroup = null;
-			
+		if(currentGroup == true) {
+
 			CurrentGroupWindow.closeFrame();
 			
 			menuJoin.setIcon(new ImageIcon("./resources/join.png"));
@@ -370,7 +410,7 @@ public class MainWindow {
 			
 			
 			if(isLeader == true) {
-			String query = "DELETE FROM groups WHERE leader = '"+NewGroupWindow.leader+"' ";
+			String query = "DELETE FROM groups WHERE leader = '"+sessionID+"' ";
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 				st.execute();
@@ -379,13 +419,14 @@ public class MainWindow {
 			}
 			
 			isLeader = false;
-			} else {
+			} else if(isLeader == false){
 			String query = "";
 			
 			
 			}
 			
 		}
+		currentGroup = false;
 	}
 	
 	public static void SaveInfo(String _username) {
@@ -398,4 +439,39 @@ public class MainWindow {
 		}
 	}
 	
+	public void SortByText(String input) {
+		Thread sort = new Thread(){
+		    public void run(){
+		    String query = "SELECT * FROM groups WHERE title LIKE '%?%'";
+				
+				try {
+					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+					st.setString(1, input);
+					ResultSet result = st.executeQuery();
+					Update(result);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}		    			    	
+		    }
+		  };
+		  sort.start();
+	}
+	
+	public void SortByType(String input) {
+		Thread sort = new Thread(){
+		    public void run(){
+		    String query = "SELECT * FROM groups WHERE type = '?'";
+				
+				try {
+					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+					st.setString(1, input);
+					ResultSet result = st.executeQuery();
+					Update(result);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}		    			    	
+		    }
+		  };
+		  sort.start();
+	}
 }

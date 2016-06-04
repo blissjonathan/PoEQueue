@@ -36,13 +36,14 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 
 public class NewGroupWindow {
 
 	private JFrame frmNewGroup;
 	private JTextField txtDescription;
-	private JPanel panel;
 	
 	private DefaultListModel listModel = new DefaultListModel();
 	private JList list;
@@ -53,9 +54,6 @@ public class NewGroupWindow {
 	private Date date = new Date();
 	private String dateData = dateFormat.format(date);
 	
-	 static Random r = new Random(10);
-	 static String Lid = Long.toString(Math.abs(r.nextLong()), 36);
-	 public static String leader = MainWindow.username + "-" + Lid;
 	 
 	 private int count = 0;
 	 
@@ -71,7 +69,6 @@ public class NewGroupWindow {
 	 * Launch the application.
 	 */
 	public static void createWindow() {
-		System.out.println(leader);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -98,7 +95,7 @@ public class NewGroupWindow {
 		frmNewGroup = new JFrame();
 		frmNewGroup.setTitle("New Group");
 		frmNewGroup.setResizable(false);
-		frmNewGroup.setBounds(100, 100, 502, 272);
+		frmNewGroup.setBounds(100, 100, 370, 118);
 		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		txtDescription = new JTextField();
@@ -129,55 +126,11 @@ public class NewGroupWindow {
 		});
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Standard", "Hardcore", "Standard Challenge", "Hardcore Challenge"}));
 		
-		panel = new JPanel();
-		panel.setBorder(new TitledBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)), "Members", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
-		
-		JButton btnAddMember = new JButton("Add Member");
-		btnAddMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String name = JOptionPane.showInputDialog(null, "Member ID",
-				        "Add Member", JOptionPane.OK_CANCEL_OPTION);
-				if(name != null && !(name.isEmpty()) && count <5) {
-					count++;
-					members.add(name);
-					listModel.addElement(name);
-					list.repaint();
-					list.revalidate();
-				}
-			}
-		});
-		
-		JButton btnRemoveMember = new JButton("Remove Member");
-		btnRemoveMember.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(list.getSelectedValue() != null) {
-				listModel.remove(list.getSelectedIndex());
-				list.repaint();
-				list.revalidate();
-				
-				if(members.contains(list.getSelectedValue())) {
-					members.remove(list.getSelectedValue());
-				}
-				
-				String query = "";
-				try {
-					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				
-				
-				count--;
-				}
-			}
-		});
-		
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String query = "insert into groups (id, type, title, date, count, league, leader,"
-						+ "member1, member2, member3, member4, member5)"
-				        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+				String query = "insert into groups (id, type, title, date, count, league, leader)"
+				        + " values (?, ?, ?, ?, ?, ?, ?)";
 				try {
 					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
 					st.setInt(1, 0);
@@ -186,12 +139,6 @@ public class NewGroupWindow {
 					st.setString(4, dateData);
 					st.setInt(5, count);
 					st.setString(6, league);
-					st.setString(7, leader);
-					st.setString(8, members.get(0));
-					st.setString(9, members.get(1));
-					st.setString(10, members.get(2));
-					st.setString(11, members.get(3));
-					st.setString(12, members.get(4));
 					st.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -203,6 +150,11 @@ public class NewGroupWindow {
 			}
 		});
 		
+		JLabel lblNoOfMembers = new JLabel("No. of members in group");
+		
+		JSpinner spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(0, 0, 5, 1));
+		
 		
 		GroupLayout groupLayout = new GroupLayout(frmNewGroup.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -211,19 +163,18 @@ public class NewGroupWindow {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(txtDescription, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+								.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+									.addComponent(lblNoOfMembers)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(spinner))
+								.addComponent(txtDescription, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 156, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-							.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-								.addComponent(btnAddMember)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(btnRemoveMember)))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(comboBox_1, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(comboBox, 0, 156, Short.MAX_VALUE)))
 						.addComponent(btnCreate))
-					.addContainerGap(75, Short.MAX_VALUE))
+					.addContainerGap(283, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -231,31 +182,23 @@ public class NewGroupWindow {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(txtDescription, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnAddMember)
-						.addComponent(btnRemoveMember))
-					.addGap(28)
+						.addComponent(lblNoOfMembers)
+						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnCreate)
-					.addContainerGap(160, Short.MAX_VALUE))
+					.addContainerGap(157, Short.MAX_VALUE))
 		);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
 		
-		list = new JList(listModel);
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 0;
-		gbc_list.gridy = 0;
-		panel.add(list, gbc_list);
+//		list = new JList(listModel);
+//		GridBagConstraints gbc_list = new GridBagConstraints();
+//		gbc_list.fill = GridBagConstraints.BOTH;
+//		gbc_list.gridx = 0;
+//		gbc_list.gridy = 0;
+//		panel.add(list, gbc_list);
 		frmNewGroup.getContentPane().setLayout(groupLayout);
 	}
 }
