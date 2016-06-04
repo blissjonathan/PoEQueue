@@ -289,12 +289,16 @@ public class MainWindow {
 		mnSortBy.add(mnType);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "PvP", "Maps", "Leveling"}));
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Sorting by " + comboBox.getSelectedItem().toString());
 				SortByType(comboBox.getSelectedItem().toString());
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Any", "PvP", "Maps", "Leveling"}));
+
 		mnType.add(comboBox);
 		
 		JMenu mnSearch = new JMenu("Search");
@@ -305,7 +309,9 @@ public class MainWindow {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				  if (arg0.getKeyCode()==KeyEvent.VK_ENTER){
-//					  SortByText(searchField.getText());
+					  System.out.println("Sorting by input " + searchField.getText());
+					  SortByText(searchField.getText());
+					  javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
 				    }
 			}
 		});
@@ -332,26 +338,17 @@ public class MainWindow {
 	public static void Update(ResultSet _rs) {
 		Thread refresh = new Thread(new Runnable() {
 			public void run() {	
-//				String fullRow = "";
-//				ArrayList<String> groupList = new ArrayList<String>();
-//				try {
-//					while (_rs.next()) {
-//					    for (int i=1, y=0; i<; i++, y++ ) {
-//					        fullRow += _rs.getString(i) +",";
-//					    }
-//					groupList.add(fullRow);
-//					}
-//				} catch (SQLException e) {
-//					e.printStackTrace();
-//				}
 				java.sql.ResultSetMetaData rsmd;
+				groupList.clear();
+				qList.clearSelection();
+				qModel.clear();
 				try {
 					rsmd = _rs.getMetaData();
 					 int columnsNumber = rsmd.getColumnCount();
-					    while (rs.next()) {
+					    while (_rs.next()) {
 					    	String tempRow = "";
 					        for (int i = 1; i <= columnsNumber; i++) {
-					            String columnValue = rs.getString(i);
+					            String columnValue = _rs.getString(i);
 					            tempRow += (columnValue + ", ");					            
 					        }
 					        tempRow = tempRow.substring(0,tempRow.length()-2);
@@ -361,7 +358,7 @@ public class MainWindow {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-			   
+				
 				for(int i = 0; i < groupList.size(); i++) {
 					qModel.addElement(groupList.get(i));
 				}
@@ -442,11 +439,10 @@ public class MainWindow {
 	public void SortByText(String input) {
 		Thread sort = new Thread(){
 		    public void run(){
-		    String query = "SELECT * FROM groups WHERE title LIKE '%?%'";
+		    String query = "SELECT * FROM groups WHERE title LIKE '%" + input + "%'";
 				
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
-					st.setString(1, input);
 					ResultSet result = st.executeQuery();
 					Update(result);
 				} catch (SQLException e) {
@@ -460,11 +456,10 @@ public class MainWindow {
 	public void SortByType(String input) {
 		Thread sort = new Thread(){
 		    public void run(){
-		    String query = "SELECT * FROM groups WHERE type = '?'";
+		    String query = "SELECT * FROM groups WHERE type = '"+input+"'";
 				
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
-					st.setString(1, input);
 					ResultSet result = st.executeQuery();
 					Update(result);
 				} catch (SQLException e) {
