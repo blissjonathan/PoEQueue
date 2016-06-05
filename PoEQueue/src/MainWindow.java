@@ -192,9 +192,43 @@ public class MainWindow {
 		qList = new JList();
 		qList.setModel(qModel);
 		
+		JLabel lblLeader = new JLabel("Leader: ");
+		
+		JLabel lblType = new JLabel("Type: ");
+		
+		JLabel lblLeague = new JLabel("League: ");
+		
+		JLabel lblMembers = new JLabel("Members: ");
+		
+		JLabel lblDescription = new JLabel("Description: ");
+		
 		qList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				
+				if(qList.getSelectedValue() != null) {
+					selectedGroup = qList.getSelectedValue().toString();
+					
+					StringTokenizer token = new StringTokenizer(selectedGroup, ",");
+					String type = token.nextToken();
+					String title = token.nextToken();
+					String date = token.nextToken();
+					String count = token.nextToken();
+					String league = token.nextToken();
+					String leaderinfo = token.nextToken();
+					String leader = null;
+					StringTokenizer leaderST = new StringTokenizer(leaderinfo, ":");
+					leaderID = leaderST.nextToken();
+					if(leaderST.hasMoreTokens()) {
+					leader = leaderST.nextToken();
+					}
+					
+					lblLeader.setText("Leader: " + leader);
+					lblType.setText("Type: " + type);
+					lblLeague.setText("League: " + league);
+					lblMembers.setText("Members: " + count);
+					textField.setText(title);
+					
+
+				}
 			}
 		});
 		
@@ -213,16 +247,7 @@ public class MainWindow {
 		gbc_InfoPane.gridx = 9;
 		gbc_InfoPane.gridy = 0;
 		frmPoeQueue.getContentPane().add(InfoPane, gbc_InfoPane);
-		
-		JLabel lblLeader = new JLabel("Leader: ");
-		
-		JLabel lblType = new JLabel("Type: ");
-		
-		JLabel lblLeague = new JLabel("League: ");
-		
-		JLabel lblMembers = new JLabel("Members: ");
-		
-		JLabel lblDescription = new JLabel("Description: ");
+	
 		
 		textField = new JTextField();
 		textField.setEditable(false);
