@@ -119,9 +119,7 @@ public class MainWindow {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					
 					String url = "jdbc:mysql://localhost:3306/qlist?autoReconnect=true&useSSL=false";
-					String user = "root";
-					String password = "foobar";
-					conn = (Connection) DriverManager.getConnection(url, user, password);
+					conn = (Connection) DriverManager.getConnection(url, LoginInfo.username, LoginInfo.password);
 					Statement stmt = (Statement) conn.createStatement();
 					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
