@@ -58,6 +58,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
@@ -116,10 +118,26 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					
-					String url = "jdbc:mysql://localhost:3306/qlist?autoReconnect=true&useSSL=false";
-					conn = (Connection) DriverManager.getConnection(url, LoginInfo.username, LoginInfo.password);
+					try {
+					    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+					        if ("Nimbus".equals(info.getName())) {
+					            UIManager.setLookAndFeel(info.getClassName());
+					            break;
+					        }
+					    }
+					} catch (UnsupportedLookAndFeelException e) {
+					    // handle exception
+					} catch (ClassNotFoundException e) {
+					    // handle exception
+					} catch (InstantiationException e) {
+					    // handle exception
+					} catch (IllegalAccessException e) {
+					    // handle exception
+					}
+					
+					conn = (Connection) DriverManager.getConnection(LoginInfo.url, LoginInfo.username, LoginInfo.password);
 					Statement stmt = (Statement) conn.createStatement();
 					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
@@ -175,9 +193,9 @@ public class MainWindow {
 		frmPoeQueue.getContentPane().setLayout(gridBagLayout);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		JLabel label = new JLabel("Type, Description, Date, # of members, League", JLabel.LEFT);
-		label.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		scrollPane.setColumnHeaderView(label);
+		JLabel lblTypeDescriptionDate = new JLabel("Type, Description, Date, # of members, League, ID:Leader", JLabel.LEFT);
+		lblTypeDescriptionDate.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		scrollPane.setColumnHeaderView(lblTypeDescriptionDate);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridwidth = 9;
 		gbc_scrollPane.gridheight = 11;
@@ -465,17 +483,41 @@ public class MainWindow {
 		JMenu mnLeague = new JMenu("League");
 		mnSortBy.add(mnLeague);
 		
-		JRadioButton rdbtnStandard = new JRadioButton("Standard");
-		mnLeague.add(rdbtnStandard);
+		JMenuItem mntmStandard = new JMenuItem("Standard");
+		mntmStandard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Sorting by " + mntmStandard.getText());
+				SortByLeague(mntmStandard.getText());
+			}
+		});
+		mnLeague.add(mntmStandard);
 		
-		JRadioButton rdbtnHardcore = new JRadioButton("Hardcore");
-		mnLeague.add(rdbtnHardcore);
+		JMenuItem mntmHardcore = new JMenuItem("Hardcore");
+		mntmHardcore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Sorting by " + mntmHardcore.getText());
+				SortByLeague(mntmHardcore.getText());
+			}
+		});
+		mnLeague.add(mntmHardcore);
 		
-		JRadioButton rdbtnChallengeStandard = new JRadioButton("Challenge Standard");
-		mnLeague.add(rdbtnChallengeStandard);
+		JMenuItem mntmChallengeStandard = new JMenuItem("Challenge Standard");
+		mntmChallengeStandard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmChallengeStandard.getText());
+				SortByLeague(mntmChallengeStandard.getText());
+			}
+		});
+		mnLeague.add(mntmChallengeStandard);
 		
-		JRadioButton rdbtnChallengeHardcore = new JRadioButton("Challenge Hardcore");
-		mnLeague.add(rdbtnChallengeHardcore);
+		JMenuItem mntmChallengeHardcore = new JMenuItem("Challenge Hardcore");
+		mntmChallengeHardcore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Sorting by " + mntmChallengeHardcore.getText());
+				SortByLeague(mntmChallengeHardcore.getText());
+			}
+		});
+		mnLeague.add(mntmChallengeHardcore);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -555,7 +597,7 @@ public class MainWindow {
 			String leader = leaderST.nextToken();
 			}
 			
-			String query = "UPDATE groups SET count = count + 1 WHERE leader = " + leaderinfo + "AND count < 6";
+			String query = "UPDATE groups SET count = count + 1 WHERE leader = '" + leaderinfo + "' AND count < 6";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -587,7 +629,7 @@ public class MainWindow {
 			
 			if(isLeader == true) {
 				
-			String query = "DELETE FROM groups WHERE leader = '"+sessionID+"' ";
+			String query = "DELETE FROM groups WHERE leader = '"+ sessionID + ":" + username + "'";
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 				st.execute();
@@ -599,7 +641,7 @@ public class MainWindow {
 			
 			} else if(isLeader == false){
 				
-			String query = "UPDATE groups SET count = count - 1 WHERE leader = " + CurrentGroupWindow.leaderinfo + "AND count > 0";
+			String query = "UPDATE groups SET count = count - 1 WHERE leader = '" + CurrentGroupWindow.leaderinfo + "' AND count > 0";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -627,7 +669,7 @@ public class MainWindow {
 	public void SortByText(String input) {
 		Thread sort = new Thread(){
 		    public void run(){
-		    String query = "SELECT * FROM groups WHERE title LIKE '%" + input + "%'";
+		    String query = "SELECT type, title, date, count, league, leader FROM groups WHERE title LIKE '%" + input + "%'";
 				
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -646,10 +688,28 @@ public class MainWindow {
 		    public void run(){
 		    String query = "";
 		    if(input.equals("Any")) {
-			query = "SELECT * FROM groups";
+			query = "SELECT type, title, date, count, league, leader FROM groups";
 		    } else if(!(input.equals("Any"))) {
-		    query = "SELECT * FROM groups WHERE type = '"+input+"'";
+		    query = "SELECT type, title, date, count, league, leader FROM groups WHERE type = '"+input+"'";
 		    }
+				try {
+					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+					ResultSet result = st.executeQuery();
+					Update(result);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}		    			    	
+		    }
+		  };
+		  sort.start();
+	}
+	
+	public void SortByLeague(String input) {
+		Thread sort = new Thread(){
+		    public void run(){
+
+		    String query = "SELECT type, title, date, count, league, leader FROM groups WHERE league = '"+input+"'";
+		    
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 					ResultSet result = st.executeQuery();
