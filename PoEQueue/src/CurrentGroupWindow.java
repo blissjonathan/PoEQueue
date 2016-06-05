@@ -68,8 +68,7 @@ public class CurrentGroupWindow {
 	public static void createWindow(String _group) {
 		group = _group;
 		
-		StringTokenizer st = new StringTokenizer(group, ", ");
-		id = st.nextToken();
+		StringTokenizer st = new StringTokenizer(group, ",");
 		type = st.nextToken();
 		title = st.nextToken();
 		date = st.nextToken();

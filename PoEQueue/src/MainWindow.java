@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import javax.swing.JFrame;
@@ -98,7 +99,7 @@ public class MainWindow {
 	static Connection conn;
 	
 	public static UUID sessionID = UUID.randomUUID();
-	public static int leaderID = 0;
+	public static String leaderID = "";
 	
 	public static boolean isLeader = false;
 	
@@ -122,7 +123,7 @@ public class MainWindow {
 					String password = "foobar";
 					conn = (Connection) DriverManager.getConnection(url, user, password);
 					Statement stmt = (Statement) conn.createStatement();
-					rs = stmt.executeQuery("SELECT type, title, date, count, league FROM groups");
+					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
 
 					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
@@ -238,7 +239,7 @@ public class MainWindow {
 						.addComponent(lblLeague)
 						.addComponent(lblMembers)
 						.addComponent(lblDescription)
-						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
 						.addComponent(btnJoin))
 					.addContainerGap())
 		);
@@ -256,8 +257,9 @@ public class MainWindow {
 					.addComponent(lblDescription)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-					.addComponent(btnJoin))
+					.addPreferredGap(ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+					.addComponent(btnJoin)
+					.addContainerGap())
 		);
 		InfoPane.setLayout(gl_InfoPane);
 		
@@ -276,7 +278,15 @@ public class MainWindow {
 		menuUpdate = new JMenu("");
 		menuUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Update(rs);
+				String query = "SELECT * FROM groups";
+				
+				try {
+					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+					ResultSet _rs = st.executeQuery();
+					Update(_rs);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		menuUpdate.setIcon(new ImageIcon("./resources/refresh.png"));
@@ -288,7 +298,7 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(selectedGroup != null) {
-				JoinGroup(selectedGroup);
+				JoinGroup(qList.getSelectedValue().toString());
 				}
 			}
 		});
@@ -470,7 +480,9 @@ public class MainWindow {
 					    	String tempRow = "";
 					        for (int i = 1; i <= columnsNumber; i++) {
 					            String columnValue = _rs.getString(i);
-					            tempRow += (columnValue + ", ");					            
+					           
+					            tempRow += (columnValue + ", ");
+					            
 					        }
 					        tempRow = tempRow.substring(0,tempRow.length()-2);
 					        groupList.add(tempRow);
@@ -494,7 +506,7 @@ public class MainWindow {
 		
 	}
 	
-	public static void JoinGroup(Group selectedGroup) {
+	public static void JoinGroup(String selectedGroup) {
 		if(currentGroup == false && username != null) {
 			currentGroup = true;
 			ImageFilter filter = new GrayFilter(true, 50);  
@@ -502,10 +514,21 @@ public class MainWindow {
 			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
 			menuJoin.setIcon(new ImageIcon(grayIcon));
 			menuJoin.repaint();
-			
 			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
 			
 			CurrentGroupWindow.createWindow(qList.getSelectedValue().toString());
+			
+			StringTokenizer token = new StringTokenizer(selectedGroup, ",");
+			String tempId = token.nextToken();
+			String tempType = token.nextToken();
+			String title = token.nextToken();
+			String date = token.nextToken();
+			String count = token.nextToken();
+			StringTokenizer leaderST = new StringTokenizer(token.nextToken(), ":");
+			leaderID = leaderST.nextToken();
+			if(leaderST.hasMoreTokens()) {
+			String leader = leaderST.nextToken();
+			}
 			
 			String query = "UPDATE groups SET count = count + 1 WHERE leader = " + leaderID + "AND count < 6";
 			
