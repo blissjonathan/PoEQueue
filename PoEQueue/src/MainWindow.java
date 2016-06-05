@@ -559,9 +559,10 @@ public class MainWindow {
 				
 				for(int i = 0; i < groupList.size(); i++) {
 					qModel.addElement(groupList.get(i));
+					qList.repaint();
+					qList.revalidate();
 				}
-				qList.repaint();
-				qList.revalidate();
+				
 			}
 		});
 		refresh.start();
@@ -574,16 +575,6 @@ public class MainWindow {
 	public static void JoinGroup() {
 		if(currentGroup == false && username != null) {
 			selectedGroup = qList.getSelectedValue().toString();
-			currentGroup = true;
-			ImageFilter filter = new GrayFilter(true, 50);  
-			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuJoin.getIcon()).getImage().getSource(), filter);  
-			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
-			menuJoin.setIcon(new ImageIcon(grayIcon));
-			menuJoin.repaint();
-			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
-			
-			CurrentGroupWindow.createWindow(selectedGroup);
-			
 			StringTokenizer token = new StringTokenizer(selectedGroup, ",");
 			String type = token.nextToken();
 			String title = token.nextToken();
@@ -596,8 +587,20 @@ public class MainWindow {
 			if(leaderST.hasMoreTokens()) {
 			String leader = leaderST.nextToken();
 			}
+			if(!(count.equals("6"))){
+			currentGroup = true;
+			ImageFilter filter = new GrayFilter(true, 50);  
+			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuJoin.getIcon()).getImage().getSource(), filter);  
+			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
+			menuJoin.setIcon(new ImageIcon(grayIcon));
+			menuJoin.repaint();
+			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
 			
-			String query = "UPDATE groups SET count = count + 1 WHERE leader = '" + leaderinfo + "' AND count < 6";
+			CurrentGroupWindow.createWindow(selectedGroup);
+			
+			
+			
+			String query = "UPDATE groups SET count = count + 1 WHERE leader = '" + leaderinfo + "' AND count <= 6";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -606,7 +609,7 @@ public class MainWindow {
 				e.printStackTrace();
 			}
 			
-			
+			}
 		} else if(username == null) {
 			JOptionPane.showMessageDialog(frmPoeQueue, "Please enter username in settings.");
 		}

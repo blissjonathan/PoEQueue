@@ -157,7 +157,7 @@ public class NewGroupWindow {
 		JLabel lblNoOfMembers = new JLabel("No. of members in group");
 		
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(0, 0, 5, 1));
+		spinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
 		
 		
 		GroupLayout groupLayout = new GroupLayout(frmNewGroup.getContentPane());
