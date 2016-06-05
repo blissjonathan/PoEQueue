@@ -91,7 +91,7 @@ public class MainWindow {
 	public static JMenu menuJoin;
 	public static JMenu menuLeave;
 	
-	public Group selectedGroup = new Group();
+	public static String selectedGroup = "";
 	
 	public static String username = "test";
 	
@@ -298,7 +298,7 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(selectedGroup != null) {
-				JoinGroup(qList.getSelectedValue().toString());
+				JoinGroup();
 				}
 			}
 		});
@@ -506,8 +506,9 @@ public class MainWindow {
 		
 	}
 	
-	public static void JoinGroup(String selectedGroup) {
+	public static void JoinGroup() {
 		if(currentGroup == false && username != null) {
+			selectedGroup = qList.getSelectedValue().toString();
 			currentGroup = true;
 			ImageFilter filter = new GrayFilter(true, 50);  
 			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuJoin.getIcon()).getImage().getSource(), filter);  
@@ -516,21 +517,22 @@ public class MainWindow {
 			menuJoin.repaint();
 			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
 			
-			CurrentGroupWindow.createWindow(qList.getSelectedValue().toString());
+			CurrentGroupWindow.createWindow(selectedGroup);
 			
 			StringTokenizer token = new StringTokenizer(selectedGroup, ",");
-			String tempId = token.nextToken();
-			String tempType = token.nextToken();
+			String type = token.nextToken();
 			String title = token.nextToken();
 			String date = token.nextToken();
 			String count = token.nextToken();
-			StringTokenizer leaderST = new StringTokenizer(token.nextToken(), ":");
+			String league = token.nextToken();
+			String leaderinfo = token.nextToken();
+			StringTokenizer leaderST = new StringTokenizer(leaderinfo, ":");
 			leaderID = leaderST.nextToken();
 			if(leaderST.hasMoreTokens()) {
 			String leader = leaderST.nextToken();
 			}
 			
-			String query = "UPDATE groups SET count = count + 1 WHERE leader = " + leaderID + "AND count < 6";
+			String query = "UPDATE groups SET count = count + 1 WHERE leader = " + leaderinfo + "AND count < 6";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -574,7 +576,7 @@ public class MainWindow {
 			
 			} else if(isLeader == false){
 				
-			String query = "UPDATE groups SET count = count - 1 WHERE leader = " + leaderID + "AND count > 0";
+			String query = "UPDATE groups SET count = count - 1 WHERE leader = " + CurrentGroupWindow.leaderinfo + "AND count > 0";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);

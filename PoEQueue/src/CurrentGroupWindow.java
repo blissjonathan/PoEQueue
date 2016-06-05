@@ -62,6 +62,7 @@ public class CurrentGroupWindow {
 	private static String type;
 	private static String date;
 	private static String session;
+	public static String leaderinfo;
 	/**
 	 * Launch the application.
 	 */
@@ -73,7 +74,9 @@ public class CurrentGroupWindow {
 		title = st.nextToken();
 		date = st.nextToken();
 		count = st.nextToken();
-		StringTokenizer leaderST = new StringTokenizer(st.nextToken(), ":");
+		league = st.nextToken();
+		leaderinfo = st.nextToken();
+		StringTokenizer leaderST = new StringTokenizer(leaderinfo, ":");
 		session = leaderST.nextToken();
 		if(leaderST.hasMoreTokens()) {
 		leader = leaderST.nextToken();
@@ -120,7 +123,7 @@ public class CurrentGroupWindow {
 		
 		JLabel lblMembers = new JLabel("Members: " + count);
 		
-		JLabel lblGroupId = new JLabel("Group ID: " + id);
+		JLabel lblGroupId = new JLabel("Group ID: " + session);
 		
 		JButton btnPmLeader = new JButton("PM Leader");
 		btnPmLeader.addActionListener(new ActionListener() {
@@ -164,14 +167,15 @@ public class CurrentGroupWindow {
 		}
 		
 		JSeparator separator_1 = new JSeparator();
+		
+		JLabel lblLeague = new JLabel("League: " + league);
+		
+		JLabel lblType = new JLabel("Type: " + type);
 		GroupLayout groupLayout = new GroupLayout(frmCurrentGroup.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(lblLeaderControls)
-					.addContainerGap())
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
@@ -185,20 +189,30 @@ public class CurrentGroupWindow {
 					.addComponent(btnLeave)
 					.addContainerGap(171, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblTime, Alignment.LEADING)
-						.addComponent(lblGroupId, Alignment.LEADING)
-						.addComponent(lblLeader, Alignment.LEADING)
-						.addComponent(lblMembers, Alignment.LEADING)
-						.addComponent(btnPmLeader, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblTime)
+						.addComponent(lblGroupId)
+						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(6)
 							.addComponent(btnAddMember, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
 							.addGap(6)
-							.addComponent(btnKickMember)))
+							.addComponent(btnKickMember))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnPmLeader, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+									.addComponent(lblLeader)
+									.addComponent(lblMembers)))
+							.addGap(22)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblLeague)
+								.addComponent(lblType))))
 					.addGap(26))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addComponent(separator_1, GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addComponent(lblLeaderControls)
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -208,9 +222,13 @@ public class CurrentGroupWindow {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblGroupId)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblLeader)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblLeader)
+						.addComponent(lblType))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblMembers)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMembers)
+						.addComponent(lblLeague))
 					.addGap(2)
 					.addComponent(btnPmLeader)
 					.addPreferredGap(ComponentPlacement.RELATED)
