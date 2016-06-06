@@ -109,6 +109,7 @@ public class MainWindow {
 	
 	public static ArrayList<String> groupList = new ArrayList<String>();
 	private JTextField textField;
+	private static JScrollPane scrollPane;
 	
 	
 	/**
@@ -185,25 +186,11 @@ public class MainWindow {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmPoeQueue.setLocation(dim.width/2-frmPoeQueue.getSize().width/2, dim.height/2-frmPoeQueue.getSize().height/2);
 		
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		frmPoeQueue.getContentPane().setLayout(gridBagLayout);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		JLabel lblTypeDescriptionDate = new JLabel("Type, Description, Date, # of members, League, ID:Leader", JLabel.LEFT);
+		scrollPane = new JScrollPane();
+		scrollPane.setPreferredSize(new Dimension(419, 435));
+		JLabel lblTypeDescriptionDate = new JLabel("Type| Description| Date| # of members|  League| ID:Leader", JLabel.LEFT);
 		lblTypeDescriptionDate.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		scrollPane.setColumnHeaderView(lblTypeDescriptionDate);
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 9;
-		gbc_scrollPane.gridheight = 11;
-		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
-		frmPoeQueue.getContentPane().add(scrollPane, gbc_scrollPane);
 		
 		qList = new JList();
 		qList.setModel(qModel);
@@ -223,7 +210,7 @@ public class MainWindow {
 				if(qList.getSelectedValue() != null) {
 					selectedGroup = qList.getSelectedValue().toString();
 					
-					StringTokenizer token = new StringTokenizer(selectedGroup, ",");
+					StringTokenizer token = new StringTokenizer(selectedGroup, "|");
 					String type = token.nextToken();
 					String title = token.nextToken();
 					String date = token.nextToken();
@@ -253,16 +240,9 @@ public class MainWindow {
 		qList.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(0, 0, 0), Color.LIGHT_GRAY, Color.GRAY));
 		
 		JPanel InfoPane = new JPanel();
+		
 		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
-		GridBagConstraints gbc_InfoPane = new GridBagConstraints();
 		InfoPane.setPreferredSize(new Dimension(25,100));
-		gbc_InfoPane.gridheight = 6;
-		gbc_InfoPane.gridwidth = 3;
-		gbc_InfoPane.insets = new Insets(0, 0, 5, 0);
-		gbc_InfoPane.fill = GridBagConstraints.BOTH;
-		gbc_InfoPane.gridx = 9;
-		gbc_InfoPane.gridy = 0;
-		frmPoeQueue.getContentPane().add(InfoPane, gbc_InfoPane);
 	
 		
 		textField = new JTextField();
@@ -303,6 +283,20 @@ public class MainWindow {
 					.addContainerGap())
 		);
 		InfoPane.setLayout(gl_InfoPane);
+		GroupLayout groupLayout = new GroupLayout(frmPoeQueue.getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 511, GroupLayout.PREFERRED_SIZE)
+					.addGap(5)
+					.addComponent(InfoPane, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(InfoPane, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE)
+		);
+		frmPoeQueue.getContentPane().setLayout(groupLayout);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmPoeQueue.setJMenuBar(menuBar);
@@ -546,7 +540,7 @@ public class MainWindow {
 					        for (int i = 1; i <= columnsNumber; i++) {
 					            String columnValue = _rs.getString(i);
 					           
-					            tempRow += (columnValue + ", ");
+					            tempRow += (columnValue + "| ");
 					            
 					        }
 					        tempRow = tempRow.substring(0,tempRow.length()-2);
@@ -562,20 +556,24 @@ public class MainWindow {
 					qList.repaint();
 					qList.revalidate();
 				}
-				
+			
 			}
 		});
 		refresh.start();
 	}
 	
-	public void SearchList(String info) {
-		
+	private void restrictPanelWidth(JPanel panel) {
+		int panelCurrentWidth = panel.getWidth();
+		int panelPreferredHeight = (int)panel.getPreferredSize().getHeight();
+		int panelMaximumHeight = (int)panel.getMaximumSize().getHeight();
+		panel.setPreferredSize(new Dimension(panelCurrentWidth, panelPreferredHeight));	
+		panel.setMaximumSize(new Dimension(panelCurrentWidth, panelMaximumHeight));
 	}
 	
 	public static void JoinGroup() {
 		if(currentGroup == false && username != null) {
 			selectedGroup = qList.getSelectedValue().toString();
-			StringTokenizer token = new StringTokenizer(selectedGroup, ",");
+			StringTokenizer token = new StringTokenizer(selectedGroup, "|");
 			String type = token.nextToken();
 			String title = token.nextToken();
 			String date = token.nextToken();

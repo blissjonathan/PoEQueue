@@ -84,7 +84,7 @@ public class CurrentGroupWindow {
 	public static void createWindow(String _group) {
 		group = _group;
 		
-		StringTokenizer st = new StringTokenizer(group, ",");
+		StringTokenizer st = new StringTokenizer(group, "|");
 		type = st.nextToken();
 		title = st.nextToken();
 		date = st.nextToken();
@@ -103,7 +103,7 @@ public class CurrentGroupWindow {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Update();
+				//Update();
 				
 			}
 			
@@ -151,7 +151,7 @@ public class CurrentGroupWindow {
 		
 		lblMembers = new JLabel("Members: " + count);
 		
-		JLabel lblGroupId = new JLabel("Group ID: " + session);
+		JLabel lblGroupId = new JLabel("Group ID: " + session.substring(24));
 		
 		JButton btnPmLeader = new JButton("PM Leader");
 		btnPmLeader.addActionListener(new ActionListener() {

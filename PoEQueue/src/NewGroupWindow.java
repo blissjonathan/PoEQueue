@@ -4,6 +4,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GrayFilter;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -16,6 +18,8 @@ import javax.swing.border.MatteBorder;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.JList;
 
@@ -24,9 +28,11 @@ import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 
 import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,6 +42,9 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -98,7 +107,7 @@ public class NewGroupWindow {
 		frmNewGroup = new JFrame();
 		frmNewGroup.setTitle("New Group");
 		frmNewGroup.setResizable(false);
-		frmNewGroup.setBounds(100, 100, 370, 118);
+		frmNewGroup.setBounds(100, 100, 370, 147);
 		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		txtDescription = new JTextField();
@@ -148,8 +157,24 @@ public class NewGroupWindow {
 					e.printStackTrace();
 				}
 				
-				MainWindow.Update(MainWindow.rs);
-				MainWindow.isLeader = true;
+				String group = type + "| " + txtDescription.getText() + "| " + dateData + "| " + spinner.getValue().toString() + "| " +
+								comboBox_1.getSelectedItem().toString() + "| " + MainWindow.sessionID + ":" + MainWindow.username;
+				
+				System.out.println("Group " + group + " created.");
+				
+				CurrentGroupWindow.createWindow(group);
+				
+				Statement stmt;
+				try {
+					stmt = (Statement) MainWindow.conn.createStatement();
+					ResultSet _rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
+					MainWindow.Update(_rs);
+					MainWindow.isLeader = true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+				MainWindow.currentGroup = true;
 				frmNewGroup.dispose();
 			}
 		});
