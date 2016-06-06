@@ -110,7 +110,7 @@ public class NewGroupWindow {
 		frmNewGroup.setBounds(100, 100, 370, 147);
 		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		txtDescription = new JTextField();
+		txtDescription = new JTextField(15);
 		txtDescription.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -121,6 +121,7 @@ public class NewGroupWindow {
 		});
 		txtDescription.setText("Description");
 		txtDescription.setColumns(10);
+		txtDescription.setDocument(new JTextFieldLimit(40));
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.addActionListener(new ActionListener() {

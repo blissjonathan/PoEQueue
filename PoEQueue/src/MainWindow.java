@@ -97,7 +97,7 @@ public class MainWindow {
 	
 	public static String selectedGroup = "";
 	
-	public static String username = "test";
+	public static String username = null;
 	
 	public static ResultSet rs;
 	static Connection conn;
@@ -170,7 +170,31 @@ public class MainWindow {
 					    public void run()
 					    {
 					    	System.out.println("Quitting Application");
-					        LeaveGroup();
+					        
+					    	if(isLeader == true) {
+								
+								String query = "DELETE FROM groups WHERE leader = '"+ sessionID + ":" + username + "'";
+								try {
+									PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+									st.execute();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+								
+								isLeader = false;
+								
+								} else if(isLeader == false){
+									
+								String query = "UPDATE groups SET count = count - 1 WHERE leader = '" + CurrentGroupWindow.leaderinfo + "' AND count > 0";
+								
+								try {
+									PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+									st.execute();
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+							}
+					    	
 					    }
 					});
 					
@@ -198,7 +222,7 @@ public class MainWindow {
 		frmPoeQueue = new JFrame();
 		frmPoeQueue.setResizable(false);
 		frmPoeQueue.setTitle("PoE Queue");
-		frmPoeQueue.setBounds(100, 100, 674, 485);
+		frmPoeQueue.setBounds(100, 100, 722, 485);
 		frmPoeQueue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -307,7 +331,8 @@ public class MainWindow {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 511, GroupLayout.PREFERRED_SIZE)
 					.addGap(5)
-					.addComponent(InfoPane, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
+					.addComponent(InfoPane, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -597,6 +622,7 @@ public class MainWindow {
 			String count = token.nextToken();
 			String league = token.nextToken();
 			String leaderinfo = token.nextToken();
+			leaderinfo = leaderinfo.substring(1);
 			StringTokenizer leaderST = new StringTokenizer(leaderinfo, ":");
 			leaderID = leaderST.nextToken();
 			if(leaderST.hasMoreTokens()) {
@@ -620,10 +646,13 @@ public class MainWindow {
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 				st.execute();
+				currentGroup = true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 			
+			} else if (count.equals("6")) {
+				JOptionPane.showMessageDialog(frmPoeQueue, "Group full.");
 			}
 		} else if(username == null) {
 			JOptionPane.showMessageDialog(frmPoeQueue, "Please enter username in settings.");
@@ -631,57 +660,61 @@ public class MainWindow {
 	}
 	
 	public static void LeaveGroup() {
-		if(currentGroup == true) {
-
-			CurrentGroupWindow.closeFrame();
-			
-			menuJoin.setIcon(new ImageIcon("./resources/join.png"));
-			menuJoin.repaint();
-			
-			ImageFilter filter = new GrayFilter(true, 50);  
-			ImageProducer producer = new FilteredImageSource(((ImageIcon) menuLeave.getIcon()).getImage().getSource(), filter);  
-			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
-			menuLeave.setIcon(new ImageIcon(grayIcon));
-			menuLeave.repaint();
-			
-			
-			if(isLeader == true) {
-				
-			String query = "DELETE FROM groups WHERE leader = '"+ sessionID + ":" + username + "'";
-			try {
-				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
-				st.execute();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		Thread leave = new Thread(new Runnable() {
+			public void run() {	
+				if(currentGroup == true) {
+					CurrentGroupWindow.closeFrame();
+					
+					menuJoin.setIcon(new ImageIcon("./resources/join.png"));
+					menuJoin.repaint();
+					
+					ImageFilter filter = new GrayFilter(true, 50);  
+					ImageProducer producer = new FilteredImageSource(((ImageIcon) menuLeave.getIcon()).getImage().getSource(), filter);  
+					Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
+					menuLeave.setIcon(new ImageIcon(grayIcon));
+					menuLeave.repaint();
+					
+					
+					if(isLeader == true) {
+						
+					String query = "DELETE FROM groups WHERE leader = '"+ sessionID + ":" + username + "'";
+					try {
+						PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+						st.execute();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+					isLeader = false;
+					
+					} else if(isLeader == false){
+						
+					String query = "UPDATE groups SET count = count - 1 WHERE leader = '" + CurrentGroupWindow.leaderinfo + "' AND count > 0";
+					
+					try {
+						PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+						st.execute();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					}
+					
+					String query = "SELECT type, title, date, count, league, leader FROM groups";
+					
+					try {
+						PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+						ResultSet _rs = st.executeQuery();
+						Update(_rs);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+				currentGroup = false;
+				System.out.println("Group left");
 			}
-			
-			isLeader = false;
-			
-			} else if(isLeader == false){
-				
-			String query = "UPDATE groups SET count = count - 1 WHERE leader = '" + CurrentGroupWindow.leaderinfo + "' AND count > 0";
-			
-			try {
-				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
-				st.execute();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			}
-			
-			String query = "SELECT type, title, date, count, league, leader FROM groups";
-			
-			try {
-				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
-				ResultSet _rs = st.executeQuery();
-				Update(_rs);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		currentGroup = false;
+		});
+		leave.start();
 	}
 	
 	public static void SaveInfo(String _username) {

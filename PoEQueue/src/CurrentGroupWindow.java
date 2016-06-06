@@ -78,6 +78,8 @@ public class CurrentGroupWindow {
 	private static String date;
 	private static String session;
 	public static String leaderinfo;
+
+	public static Timer timer;
 	/**
 	 * Launch the application.
 	 */
@@ -98,12 +100,12 @@ public class CurrentGroupWindow {
 		leader = leaderST.nextToken();
 		}
 		
-		final Timer timer = new Timer(10000, null);
+		timer = new Timer(10000, null);
 		ActionListener listener = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//Update();
+				Update();
 				
 			}
 			
@@ -209,9 +211,10 @@ public class CurrentGroupWindow {
 		
 		JLabel lblDescription = new JLabel("Description:");
 		
-		textField = new JTextField();
+		textField = new JTextField(15);
 		textField.setText(title);
 		textField.setColumns(10);
+		textField.setDocument(new JTextFieldLimit(40));
 		
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
@@ -411,6 +414,7 @@ public class CurrentGroupWindow {
 	
 	
 	public static void closeFrame() {
+		timer.stop();
 		frmCurrentGroup.dispose();
 	}
 }
