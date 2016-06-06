@@ -311,9 +311,9 @@ public class MainWindow {
 		mnFile.add(mntmQuit);
 
 		menuUpdate = new JMenu("");
-		menuUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String query = "SELECT * FROM groups";
+		menuUpdate.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				String query = "SELECT type, title, date, count, league, leader FROM groups";
 				
 				try {
 					PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
@@ -651,6 +651,16 @@ public class MainWindow {
 				e.printStackTrace();
 			}
 			
+			}
+			
+			String query = "SELECT type, title, date, count, league, leader FROM groups";
+			
+			try {
+				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
+				ResultSet _rs = st.executeQuery();
+				Update(_rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 			
 		}
