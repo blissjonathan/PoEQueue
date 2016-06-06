@@ -4,12 +4,14 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -111,6 +113,7 @@ public class MainWindow {
 	private JTextField textField;
 	private static JScrollPane scrollPane;
 	
+	private static String version = "1.0";
 	
 	/**
 	 * Launch the application.
@@ -119,8 +122,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-//					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					
+
 					try {
 					    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 					        if ("Nimbus".equals(info.getName())) {
@@ -137,6 +139,22 @@ public class MainWindow {
 					} catch (IllegalAccessException e) {
 					    // handle exception
 					}
+					
+					
+
+					URL update = new URL("https://dl.dropboxusercontent.com/u/82755681/PoEQueue/update.txt");
+					Scanner sUpdate = new Scanner(update.openStream());
+					String checkUpdate = sUpdate.next();
+					StringTokenizer st = new StringTokenizer(checkUpdate,":");
+					String tempversion = st.nextToken();
+					System.out.println("Server version " + tempversion);
+					String tempurl = st.nextToken();
+					System.out.println("Server URL " + tempurl);
+					
+					if(!(tempversion.equals(version))) {
+						UpdateWindow.createWindow(tempurl,tempversion);
+					}
+					
 					
 					conn = (Connection) DriverManager.getConnection(LoginInfo.url, LoginInfo.username, LoginInfo.password);
 					Statement stmt = (Statement) conn.createStatement();
@@ -539,7 +557,6 @@ public class MainWindow {
 					    	String tempRow = "";
 					        for (int i = 1; i <= columnsNumber; i++) {
 					            String columnValue = _rs.getString(i);
-					           
 					            tempRow += (columnValue + "| ");
 					            
 					        }

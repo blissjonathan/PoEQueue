@@ -143,11 +143,17 @@ public class NewGroupWindow {
 			public void actionPerformed(ActionEvent arg0) {
 				String query = "insert into groups (id, type, title, date, count, league, leader)"
 				        + " values (?, ?, ?, ?, ?, ?, ?)";
+				
+				String titleText = txtDescription.getText();
+				if(titleText.contains("|")) {
+					titleText = titleText.replaceAll("|", ",");
+				}
+				
 				try {
 					PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
 					st.setInt(1, 0);
 					st.setString(2, comboBox.getSelectedItem().toString());
-					st.setString(3, txtDescription.getText());
+					st.setString(3, titleText);
 					st.setString(4, dateData);
 					st.setString(5, spinner.getValue().toString());
 					st.setString(6, comboBox_1.getSelectedItem().toString());
