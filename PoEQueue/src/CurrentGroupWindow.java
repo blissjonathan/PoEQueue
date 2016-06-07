@@ -250,6 +250,7 @@ public class CurrentGroupWindow {
 		JSeparator separator_1 = new JSeparator();
 		
 		JLabel lblLeague = new JLabel("League: " + league);
+		lblLeague.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		lblLeague.setForeground(Color.WHITE);
 		
 		JLabel lblType = new JLabel("Type: " + type);

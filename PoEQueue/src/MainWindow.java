@@ -117,7 +117,7 @@ public class MainWindow {
 	private JTextField textField;
 	private static JScrollPane scrollPane;
 	
-	private static String version = "1.0";
+	public static String version = "1.0";
 	
 	/**
 	 * Launch the application.
@@ -212,6 +212,7 @@ public class MainWindow {
 					MainWindow window = new MainWindow();
 					window.frmPoeQueue.setVisible(true);
 				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frmPoeQueue, "Failed to connect.");
 					e.printStackTrace();
 				}
 			}
@@ -251,14 +252,19 @@ public class MainWindow {
 		qList.setOpaque(false);
 		
 		JLabel lblLeader = new JLabel("Leader: ");
+		lblLeader.setForeground(new Color(0, 204, 255));
 		
 		JLabel lblType = new JLabel("Type: ");
+		lblType.setForeground(new Color(0, 204, 255));
 		
 		JLabel lblLeague = new JLabel("League: ");
+		lblLeague.setForeground(new Color(0, 204, 255));
 		
 		JLabel lblMembers = new JLabel("Members: ");
+		lblMembers.setForeground(new Color(0, 204, 255));
 		
 		JLabel lblDescription = new JLabel("Description: ");
+		lblDescription.setForeground(new Color(0, 204, 255));
 		
 		qList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -297,7 +303,7 @@ public class MainWindow {
 		
 		JPanel InfoPane = new JPanel();
 		InfoPane.setOpaque(false);
-		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
+		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 255, 255), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 204, 255)));
 		InfoPane.setPreferredSize(new Dimension(25,100));
 	
 		
@@ -360,16 +366,22 @@ public class MainWindow {
 		);
 		frmPoeQueue.getContentPane().setLayout(groupLayout);
 		
-		JMenuBar menuBar = new JMenuBar();
+		BackgroundMenuBar menuBar = new BackgroundMenuBar();
+		menuBar.setForeground(new Color(255, 255, 255));
+		menuBar.setBackground(new Color(0, 206, 209));
+		menuBar.setColor(Color.decode("#073664"));
 		frmPoeQueue.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
+		mnFile.setForeground(new Color(255, 255, 255));
 		menuBar.add(mnFile);
 		
-		JMenuItem mntmGroupinfo = new JMenuItem("GroupInfo");
-		mnFile.add(mntmGroupinfo);
-		
 		JMenuItem mntmQuit = new JMenuItem("Quit");
+		mntmQuit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmQuit);
 
 		menuUpdate = new JMenu("");
@@ -447,6 +459,7 @@ public class MainWindow {
 		menuBar.add(menuSettings);
 		
 		JMenu mnSortBy = new JMenu("Sort By...");
+		mnSortBy.setForeground(new Color(255, 255, 255));
 		menuBar.add(mnSortBy);
 		
 		JMenu mnType = new JMenu("Type");
@@ -576,12 +589,13 @@ public class MainWindow {
 		mnLeague.add(mntmChallengeHardcore);
 		
 		JMenu mnHelp = new JMenu("Help");
+		mnHelp.setForeground(new Color(255, 255, 255));
 		menuBar.add(mnHelp);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				AboutWindow.createWindow();	
 			}
 		});
 		mnHelp.add(mntmAbout);
