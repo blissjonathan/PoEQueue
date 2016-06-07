@@ -140,7 +140,7 @@ public class CurrentGroupWindow {
 		frmCurrentGroup.setAutoRequestFocus(false);
 		frmCurrentGroup.setAlwaysOnTop(true);
 		frmCurrentGroup.setResizable(false);
-		frmCurrentGroup.setContentPane(new JLabel(new ImageIcon("./resources/black.png")));
+		frmCurrentGroup.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/images/black.png"))));
 		frmCurrentGroup.setTitle("Current Group");
 		frmCurrentGroup.setBounds(100, 100, 258, 347);
 		frmCurrentGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -266,7 +266,7 @@ public class CurrentGroupWindow {
 		buttonRefresh.setOpaque(false);
 		buttonRefresh.setContentAreaFilled(false);
 		buttonRefresh.setBorderPainted(false);
-		buttonRefresh.setIcon(new ImageIcon("./resources/refresh.png"));
+		buttonRefresh.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
 		
 		GroupLayout groupLayout = new GroupLayout(frmCurrentGroup.getContentPane());
 		groupLayout.setHorizontalGroup(

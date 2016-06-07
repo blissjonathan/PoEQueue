@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -167,9 +168,11 @@ public class MainWindow {
 					Statement stmt = (Statement) conn.createStatement();
 					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
-
+					File f1 = new File("./resources/data.txt");
+					if(f1.exists() && !f1.isDirectory()) {
 					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
 					username = content;
+					}
 					
 					Runtime.getRuntime().addShutdownHook(new Thread()
 					{
@@ -231,7 +234,7 @@ public class MainWindow {
 		frmPoeQueue.setTitle("PoE Queue");
 		frmPoeQueue.setBounds(100, 100, 722, 485);
 		frmPoeQueue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmPoeQueue.setContentPane(new JLabel(new ImageIcon("./resources/blue.png")));
+		frmPoeQueue.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/images/blue.png"))));
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmPoeQueue.setLocation(dim.width/2-frmPoeQueue.getSize().width/2, dim.height/2-frmPoeQueue.getSize().height/2);
 		
@@ -383,7 +386,7 @@ public class MainWindow {
 				}
 			}
 		});
-		menuUpdate.setIcon(new ImageIcon("./resources/refresh.png"));
+		menuUpdate.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
 		menuUpdate.setToolTipText("Refresh list");
 		menuBar.add(menuUpdate);
 		
@@ -396,7 +399,7 @@ public class MainWindow {
 				}
 			}
 		});
-		menuJoin.setIcon(new ImageIcon("./resources/join.png"));
+		menuJoin.setIcon(new ImageIcon(getClass().getResource("/images/join.png")));
 		menuJoin.setToolTipText("Join Group");
 		menuBar.add(menuJoin);
 		
@@ -409,7 +412,7 @@ public class MainWindow {
 				}
 			}
 		});
-		menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
+		menuLeave.setIcon(new ImageIcon(getClass().getResource("/images/leave.png")));
 		ImageFilter filter = new GrayFilter(true, 50);  
 		ImageProducer producer = new FilteredImageSource(((ImageIcon) menuLeave.getIcon()).getImage().getSource(), filter);  
 		Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
@@ -424,7 +427,7 @@ public class MainWindow {
 				NewGroupWindow.createWindow();
 			}
 		});
-		menuNewGroup.setIcon(new ImageIcon("./resources/new.png"));
+		menuNewGroup.setIcon(new ImageIcon(getClass().getResource("/images/new.png")));
 		menuNewGroup.setToolTipText("Create new group");
 		menuBar.add(menuNewGroup);
 		
@@ -440,7 +443,7 @@ public class MainWindow {
 				}
 			}
 		});
-		menuSettings.setIcon(new ImageIcon("./resources/settings.png"));
+		menuSettings.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));
 		menuBar.add(menuSettings);
 		
 		JMenu mnSortBy = new JMenu("Sort By...");
