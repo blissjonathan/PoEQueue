@@ -1,5 +1,7 @@
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.FileNotFoundException;
@@ -68,6 +70,7 @@ import javax.swing.JLabel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextLayout;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
@@ -140,7 +143,11 @@ public class MainWindow {
 					    // handle exception
 					}
 					
+					Graphics2D g = null;
+					Graphics2D g2d = (Graphics2D) g;
 					
+					Font f = new Font("Helvetica",Font.PLAIN,12);
+//					TextLayout tl = new TextLayout();
 
 					URL update = new URL("https://dl.dropboxusercontent.com/u/82755681/PoEQueue/update.txt");
 					Scanner sUpdate = new Scanner(update.openStream());
@@ -224,18 +231,21 @@ public class MainWindow {
 		frmPoeQueue.setTitle("PoE Queue");
 		frmPoeQueue.setBounds(100, 100, 722, 485);
 		frmPoeQueue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		frmPoeQueue.setContentPane(new JLabel(new ImageIcon("./resources/blue.png")));
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmPoeQueue.setLocation(dim.width/2-frmPoeQueue.getSize().width/2, dim.height/2-frmPoeQueue.getSize().height/2);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setPreferredSize(new Dimension(419, 435));
+		scrollPane.setOpaque(false);
 		JLabel lblTypeDescriptionDate = new JLabel("Type| Description| Date| # of members|  League| ID:Leader", JLabel.LEFT);
+		lblTypeDescriptionDate.setBackground(new Color(255, 204, 102));
 		lblTypeDescriptionDate.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		scrollPane.setColumnHeaderView(lblTypeDescriptionDate);
 		
 		qList = new JList();
 		qList.setModel(qModel);
+		qList.setOpaque(false);
 		
 		JLabel lblLeader = new JLabel("Leader: ");
 		
@@ -279,10 +289,11 @@ public class MainWindow {
 		
 		Update(rs);
 		scrollPane.setViewportView(qList);
+		scrollPane.getViewport().setOpaque(false);
 		qList.setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(0, 0, 0), Color.LIGHT_GRAY, Color.GRAY));
 		
 		JPanel InfoPane = new JPanel();
-		
+		InfoPane.setOpaque(false);
 		InfoPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 3, true), "Group Information", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		InfoPane.setPreferredSize(new Dimension(25,100));
 	
@@ -292,6 +303,11 @@ public class MainWindow {
 		textField.setColumns(10);
 		
 		JButton btnJoin = new JButton("Join");
+		btnJoin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JoinGroup();
+			}
+		});
 		GroupLayout gl_InfoPane = new GroupLayout(InfoPane);
 		gl_InfoPane.setHorizontalGroup(
 			gl_InfoPane.createParallelGroup(Alignment.LEADING)
@@ -613,7 +629,7 @@ public class MainWindow {
 	}
 	
 	public static void JoinGroup() {
-		if(currentGroup == false && username != null) {
+		if(currentGroup == false && username != null && qList.getSelectedValue() != null) {
 			selectedGroup = qList.getSelectedValue().toString();
 			StringTokenizer token = new StringTokenizer(selectedGroup, "|");
 			String type = token.nextToken();

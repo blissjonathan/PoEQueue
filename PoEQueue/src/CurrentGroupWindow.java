@@ -140,6 +140,7 @@ public class CurrentGroupWindow {
 		frmCurrentGroup.setAutoRequestFocus(false);
 		frmCurrentGroup.setAlwaysOnTop(true);
 		frmCurrentGroup.setResizable(false);
+		frmCurrentGroup.setContentPane(new JLabel(new ImageIcon("./resources/black.png")));
 		frmCurrentGroup.setTitle("Current Group");
 		frmCurrentGroup.setBounds(100, 100, 258, 347);
 		frmCurrentGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -149,11 +150,14 @@ public class CurrentGroupWindow {
 									MainWindow.frmPoeQueue.getY());
 		
 		lblTime = new JLabel("Time Spent in Group: ");
+		lblTime.setForeground(Color.WHITE);
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		lblMembers = new JLabel("Members: " + count);
+		lblMembers.setForeground(Color.WHITE);
 		
 		JLabel lblGroupId = new JLabel("Group ID: " + session.substring(24));
+		lblGroupId.setForeground(Color.WHITE);
 		
 		JButton btnPmLeader = new JButton("PM Leader");
 		btnPmLeader.addActionListener(new ActionListener() {
@@ -163,6 +167,7 @@ public class CurrentGroupWindow {
 		});
 		
 		JLabel lblLeader = new JLabel("Leader: " + leader);
+		lblLeader.setForeground(Color.WHITE);
 		
 		JButton btnLeave = new JButton("Leave");
 		btnLeave.addActionListener(new ActionListener() {
@@ -207,9 +212,11 @@ public class CurrentGroupWindow {
 		JSeparator separator = new JSeparator();
 		
 		JLabel lblLeaderControls = new JLabel("Leader Controls");
+		lblLeaderControls.setForeground(Color.WHITE);
 		lblLeaderControls.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JLabel lblDescription = new JLabel("Description:");
+		lblDescription.setForeground(Color.WHITE);
 		
 		textField = new JTextField(15);
 		textField.setText(title);
@@ -243,8 +250,10 @@ public class CurrentGroupWindow {
 		JSeparator separator_1 = new JSeparator();
 		
 		JLabel lblLeague = new JLabel("League: " + league);
+		lblLeague.setForeground(Color.WHITE);
 		
 		JLabel lblType = new JLabel("Type: " + type);
+		lblType.setForeground(Color.WHITE);
 		
 		JButton buttonRefresh = new JButton("");
 		buttonRefresh.addActionListener(new ActionListener() {
