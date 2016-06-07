@@ -170,7 +170,7 @@ public class MainWindow {
 					Statement stmt = (Statement) conn.createStatement();
 					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
-					File f1 = new File("./resources/data.txt");
+					File f1 = new File("./data.txt");
 					if(f1.exists() && !f1.isDirectory()) {
 					String content = new String(Files.readAllBytes(Paths.get("./data.txt")));
 					username = content;
