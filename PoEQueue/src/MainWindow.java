@@ -6,6 +6,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
@@ -170,7 +172,7 @@ public class MainWindow {
 					
 					File f1 = new File("./resources/data.txt");
 					if(f1.exists() && !f1.isDirectory()) {
-					String content = new String(Files.readAllBytes(Paths.get("./resources/data.txt")));
+					String content = new String(Files.readAllBytes(Paths.get("./data.txt")));
 					username = content;
 					}
 					
@@ -751,13 +753,16 @@ public class MainWindow {
 	}
 	
 	public static void SaveInfo(String _username) {
-		try {
-			PrintWriter out = new PrintWriter("./resources/data.txt");
-			out.println(_username);
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+			File file = new File("./data.txt");
+			
+			try {
+				FileWriter fileWriter = new FileWriter(file);
+				fileWriter.write(_username);
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	public void SortByText(String input) {
