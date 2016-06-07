@@ -378,13 +378,6 @@ public class MainWindow {
 				System.exit(0);
 			}
 		});
-		
-		JMenuItem mntmNewGroup = new JMenuItem("New Group");
-		mntmNewGroup.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		mnFile.add(mntmNewGroup);
 		mnFile.add(mntmQuit);
 
 		menuUpdate = new JMenu("");
