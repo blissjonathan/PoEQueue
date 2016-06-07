@@ -56,9 +56,10 @@ public class SettingsWindow {
 		frmSettings.setLocation(dim.width/2-frmSettings.getSize().width/2, dim.height/2-frmSettings.getSize().height/2);
 		
 		
-		txtUsername = new JTextField();
+		txtUsername = new JTextField(15);
 		txtUsername.setText(username);
 		txtUsername.setColumns(10);
+		txtUsername.setDocument(new JTextFieldLimit(20));
 		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {

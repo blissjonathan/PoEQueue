@@ -18,6 +18,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Dimension;
 import java.awt.SystemColor;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -60,6 +61,8 @@ public class AboutWindow {
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 387, 187);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{122, 125, 0};
 		gridBagLayout.rowHeights = new int[]{27, 14, 20, 23, 14, 0};

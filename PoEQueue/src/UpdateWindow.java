@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Window.Type;
+import java.awt.SystemColor;
 
 
 public class UpdateWindow {
@@ -52,12 +53,13 @@ public class UpdateWindow {
 	 */
 	private void initialize() {
 		frmUpdate = new JFrame();
+		frmUpdate.getContentPane().setBackground(SystemColor.inactiveCaption);
 		frmUpdate.setAlwaysOnTop(true);
-		frmUpdate.setType(Type.UTILITY);
+		frmUpdate.setType(Type.POPUP);
 		frmUpdate.setTitle("Update!");
 		frmUpdate.setResizable(false);
 		frmUpdate.setBounds(100, 100, 311, 207);
-		frmUpdate.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmUpdate.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmUpdate.setLocation(dim.width/2-frmUpdate.getSize().width/2, dim.height/2-frmUpdate.getSize().height/2);
@@ -74,6 +76,7 @@ public class UpdateWindow {
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frmUpdate.dispose();
+				System.exit(0);
 			}
 		});
 		

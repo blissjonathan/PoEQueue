@@ -15,8 +15,10 @@ import java.awt.Toolkit;
 
 
 
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -167,6 +169,7 @@ public class CurrentGroupWindow {
 		});
 		
 		JLabel lblLeader = new JLabel("Leader: " + leader);
+		lblLeader.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		lblLeader.setForeground(Color.WHITE);
 		
 		JButton btnLeave = new JButton("Leave");
@@ -414,6 +417,8 @@ public class CurrentGroupWindow {
 						    
 							
 					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(frmCurrentGroup, "Leader has left.");
+						MainWindow.LeaveGroup();
 						e1.printStackTrace();
 					}	
 			    }

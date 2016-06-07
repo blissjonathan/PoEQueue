@@ -62,6 +62,7 @@ public class CopyWindow {
 		txtMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		txtMessage.setText(message);
 		txtMessage.setColumns(10);
+		txtMessage.setEditable(false);
 		
 		JButton btnCopyToClipboard = new JButton("Copy to Clipboard");
 		btnCopyToClipboard.addActionListener(new ActionListener() {

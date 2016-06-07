@@ -87,7 +87,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class MainWindow {
 
 	public static JFrame frmPoeQueue;
-	public ArrayList<Group> groups = new ArrayList<Group>();
 	
 	private static DefaultListModel qModel = new DefaultListModel();
 	public static JList qList;
@@ -145,12 +144,6 @@ public class MainWindow {
 					} catch (IllegalAccessException e) {
 					    // handle exception
 					}
-					
-					Graphics2D g = null;
-					Graphics2D g2d = (Graphics2D) g;
-					
-					Font f = new Font("Helvetica",Font.PLAIN,12);
-//					TextLayout tl = new TextLayout();
 
 					URL update = new URL("https://dl.dropboxusercontent.com/u/82755681/PoEQueue/update.txt");
 					Scanner sUpdate = new Scanner(update.openStream());
@@ -233,6 +226,7 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frmPoeQueue = new JFrame();
+		frmPoeQueue.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/icon.png")));
 		frmPoeQueue.setResizable(false);
 		frmPoeQueue.setTitle("PoE Queue");
 		frmPoeQueue.setBounds(100, 100, 722, 485);
@@ -384,6 +378,13 @@ public class MainWindow {
 				System.exit(0);
 			}
 		});
+		
+		JMenuItem mntmNewGroup = new JMenuItem("New Group");
+		mntmNewGroup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		mnFile.add(mntmNewGroup);
 		mnFile.add(mntmQuit);
 
 		menuUpdate = new JMenu("");
@@ -458,6 +459,7 @@ public class MainWindow {
 			}
 		});
 		menuSettings.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));
+		menuSettings.setToolTipText("Settings");
 		menuBar.add(menuSettings);
 		
 		JMenu mnSortBy = new JMenu("Sort By...");
