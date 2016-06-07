@@ -142,6 +142,7 @@ public class NewGroupWindow {
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(MainWindow.username != null) {
 				String query = "insert into groups (id, type, title, date, count, league, leader)"
 				        + " values (?, ?, ?, ?, ?, ?, ?)";
 				
@@ -183,6 +184,10 @@ public class NewGroupWindow {
 
 				MainWindow.currentGroup = true;
 				frmNewGroup.dispose();
+			} else if(MainWindow.username == null) {
+				JOptionPane.showMessageDialog(frmNewGroup, "Must create username in settings to form new group.");
+				frmNewGroup.dispose();
+			}
 			}
 		});
 		

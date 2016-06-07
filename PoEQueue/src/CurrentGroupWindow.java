@@ -392,9 +392,10 @@ public class CurrentGroupWindow {
 			    String query = "SELECT title, count FROM groups WHERE leader = '" + leaderinfo + "'";
 			    	
 			    	try {
+			    		ResultSet rs = null;
 						PreparedStatement st = (PreparedStatement) MainWindow.conn.prepareStatement(query);
-						ResultSet rs = st.executeQuery();
-						
+						rs = st.executeQuery();
+						if(rs.next()) {
 						rsmd = rs.getMetaData();
 						 int columnsNumber = rsmd.getColumnCount();
 						    while (rs.next()) {
@@ -415,10 +416,11 @@ public class CurrentGroupWindow {
 						    textField.setText(description);
 						    lblMembers.setText("Members: " + memCount);
 						    
-							
+						} else {
+							JOptionPane.showMessageDialog(frmCurrentGroup, "Leader has left or your group cannot be found.");
+							MainWindow.LeaveGroup();
+						}
 					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(frmCurrentGroup, "Leader has left.");
-						MainWindow.LeaveGroup();
 						e1.printStackTrace();
 					}	
 			    }
