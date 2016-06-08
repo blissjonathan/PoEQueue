@@ -148,7 +148,7 @@ public class MainWindow {
 					URL update = new URL("https://dl.dropboxusercontent.com/u/82755681/PoEQueue/update.txt");
 					Scanner sUpdate = new Scanner(update.openStream());
 					String checkUpdate = sUpdate.next();
-					StringTokenizer st = new StringTokenizer(checkUpdate,":");
+					StringTokenizer st = new StringTokenizer(checkUpdate,"|");
 					String tempversion = st.nextToken();
 					System.out.println("Server version " + tempversion);
 					String tempurl = st.nextToken();

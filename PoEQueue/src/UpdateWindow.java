@@ -14,6 +14,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Window.Type;
 import java.awt.SystemColor;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public class UpdateWindow {
@@ -75,6 +80,29 @@ public class UpdateWindow {
 		JButton btnOk = new JButton("OK");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				File file=new File("./Update.bat");
+				FileOutputStream fos;
+				try {
+					fos = new FileOutputStream(file);
+					DataOutputStream dos = new DataOutputStream(fos);
+					String newLine = System.getProperty("line.separator");
+					dos.writeBytes("timeout 3");
+					dos.writeBytes(newLine);
+					dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + updateURL + " %~dp0\\PoEQueue.jar");
+					dos.writeBytes(newLine);
+					dos.writeBytes("start javaw -jar PoEQueue.jar"); 
+					dos.writeBytes(newLine);
+					dos.writeBytes("del \"%~f0\"&exit");
+					
+					String cmd="cmd /c start Update.bat";
+					Runtime r = Runtime.getRuntime();
+					Process pr = r.exec(cmd); 
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				
 				frmUpdate.dispose();
 				System.exit(0);
 			}
