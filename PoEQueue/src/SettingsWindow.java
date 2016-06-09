@@ -69,9 +69,9 @@ public class SettingsWindow {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String temp = txtUsername.getText();
-//				if(temp.contains(";")) {
-//					temp.replaceAll(";", ",");
-//				}
+				if(temp.contains(";")) {
+					temp.replaceAll(";", ",");
+				}
 				MainWindow.username = temp;
 				MainWindow.SaveInfo(temp);
 				frmSettings.dispose();
