@@ -11,11 +11,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.SystemColor;
 
 
 public class SettingsWindow {
 
-	private JFrame frmSettings;
+	private static JFrame frmSettings;
 	private JTextField txtUsername;
 	private static String username;
 	/**
@@ -26,8 +27,10 @@ public class SettingsWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					if(frmSettings == null) {
 					SettingsWindow window = new SettingsWindow();
 					window.frmSettings.setVisible(true);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -47,6 +50,7 @@ public class SettingsWindow {
 	 */
 	private void initialize() {
 		frmSettings = new JFrame();
+		frmSettings.getContentPane().setForeground(SystemColor.inactiveCaption);
 		frmSettings.setAlwaysOnTop(true);
 		frmSettings.setTitle("Settings");
 		frmSettings.setBounds(100, 100, 265, 176);
@@ -56,16 +60,20 @@ public class SettingsWindow {
 		frmSettings.setLocation(dim.width/2-frmSettings.getSize().width/2, dim.height/2-frmSettings.getSize().height/2);
 		
 		
-		txtUsername = new JTextField(15);
-		txtUsername.setText(username);
+		txtUsername = new JTextField();
 		txtUsername.setColumns(10);
 		txtUsername.setDocument(new JTextFieldLimit(20));
+		txtUsername.setText(username);
 		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainWindow.SaveInfo(txtUsername.getText());
-				MainWindow.username = txtUsername.getText();
+				String temp = txtUsername.getText();
+//				if(temp.contains(";")) {
+//					temp.replaceAll(";", ",");
+//				}
+				MainWindow.username = temp;
+				MainWindow.SaveInfo(temp);
 				frmSettings.dispose();
 			}
 		});

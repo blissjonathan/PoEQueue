@@ -52,7 +52,7 @@ import javax.swing.SpinnerNumberModel;
 
 public class NewGroupWindow {
 
-	private JFrame frmNewGroup;
+	private static JFrame frmNewGroup;
 	private JTextField txtDescription;
 	
 	private DefaultListModel listModel = new DefaultListModel();
@@ -84,8 +84,10 @@ public class NewGroupWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					if(frmNewGroup == null) {
 					NewGroupWindow window = new NewGroupWindow();
 					window.frmNewGroup.setVisible(true);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -143,8 +145,8 @@ public class NewGroupWindow {
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(MainWindow.username != null) {
-				String query = "insert into groups (id, type, title, date, count, league, leader)"
-				        + " values (?, ?, ?, ?, ?, ?, ?)";
+				String query = "insert into groups (id, type, title, date, count, league, leader, members)"
+				        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				String titleText = txtDescription.getText();
 				if(titleText.contains("|")) {
@@ -160,6 +162,7 @@ public class NewGroupWindow {
 					st.setString(5, spinner.getValue().toString());
 					st.setString(6, comboBox_1.getSelectedItem().toString());
 					st.setString(7, MainWindow.sessionID + ":" + MainWindow.username);
+					st.setString(8, "");
 					st.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();

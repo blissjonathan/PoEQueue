@@ -118,7 +118,7 @@ public class MainWindow {
 	private JTextField textField;
 	private static JScrollPane scrollPane;
 	
-	public static String version = "1.0";
+	public static String version = "1.21";
 	
 	/**
 	 * Launch the application.
@@ -672,10 +672,13 @@ public class MainWindow {
 			
 			
 			String query = "UPDATE groups SET count = count + 1 WHERE leader = '" + leaderinfo + "' AND count <= 6";
+			String query2 = "UPDATE groups SET members = CONCAT(members,'" + username + ";') WHERE leader = '" + leaderinfo + "'";
 			
 			try {
 				PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 				st.execute();
+				PreparedStatement st2 = (PreparedStatement) conn.prepareStatement(query2);
+				st2.execute();
 				currentGroup = true;
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -720,10 +723,13 @@ public class MainWindow {
 					} else if(isLeader == false){
 						
 					String query = "UPDATE groups SET count = count - 1 WHERE leader = '" + CurrentGroupWindow.leaderinfo + "' AND count > 0";
+					String query2 = "UPDATE groups SET members = REPLACE(members, '" + username + ";', '') WHERE leader = '" + CurrentGroupWindow.leaderinfo + "'";
 					
 					try {
 						PreparedStatement st = (PreparedStatement) conn.prepareStatement(query);
 						st.execute();
+						PreparedStatement st2 = (PreparedStatement) conn.prepareStatement(query2);
+						st2.execute();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
