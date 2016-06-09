@@ -1,8 +1,10 @@
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,6 +51,8 @@ import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
@@ -82,6 +86,9 @@ import javax.swing.JRadioButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowEvent;
 
 
 public class MainWindow {
@@ -117,6 +124,8 @@ public class MainWindow {
 	public static ArrayList<String> groupList = new ArrayList<String>();
 	private JTextField textField;
 	private static JScrollPane scrollPane;
+	
+	Point originLocation = new Point(0,0);
 	
 	public static String version = "1.21";
 	
@@ -159,7 +168,7 @@ public class MainWindow {
 					}
 					
 					
-					conn = (Connection) DriverManager.getConnection(LoginInfo.url, LoginInfo.username, LoginInfo.password);
+					conn = (Connection) DriverManager.getConnection(LoginInfo.getURL(), LoginInfo.getUsername(), LoginInfo.getPassword());
 					Statement stmt = (Statement) conn.createStatement();
 					rs = stmt.executeQuery("SELECT type, title, date, count, league, leader FROM groups");
 					
@@ -226,6 +235,34 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		frmPoeQueue = new JFrame();
+		frmPoeQueue.addWindowFocusListener(new WindowFocusListener() {
+			public void windowGainedFocus(WindowEvent arg0) {
+				if(CurrentGroupWindow.frmCurrentGroup != null) {
+					CurrentGroupWindow.frmCurrentGroup.toFront();
+					CurrentGroupWindow.frmCurrentGroup.repaint();
+				}
+			}
+			public void windowLostFocus(WindowEvent e) {
+			}
+		});
+		  frmPoeQueue.addComponentListener(new ComponentListener() 
+		  {  
+		    public void componentMoved(ComponentEvent e) {
+		      Component c = (Component)e.getSource();
+		      
+		      if(CurrentGroupWindow.frmCurrentGroup != null) {
+		    	  CurrentGroupWindow.frmCurrentGroup.setLocation(c.getX()+ frmPoeQueue.getWidth(), c.getY());
+		    	  
+		      }
+		    }
+
+		    public void componentShown(ComponentEvent evt) {}
+
+		    public void componentResized(ComponentEvent evt) {}
+
+		    public void componentHidden(ComponentEvent evt) {}
+		  }
+		  );
 		frmPoeQueue.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/images/icon.png")));
 		frmPoeQueue.setResizable(false);
 		frmPoeQueue.setTitle("PoE Queue");

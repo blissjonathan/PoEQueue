@@ -65,7 +65,7 @@ import java.awt.event.MouseEvent;
 
 public class CurrentGroupWindow {
 
-	private static JFrame frmCurrentGroup;
+	public static JFrame frmCurrentGroup;
 	
 	public static String group;
 	
@@ -149,7 +149,6 @@ public class CurrentGroupWindow {
 		frmCurrentGroup = new JFrame();
 		frmCurrentGroup.getContentPane().setBackground(Color.DARK_GRAY);
 		frmCurrentGroup.setAutoRequestFocus(false);
-		frmCurrentGroup.setAlwaysOnTop(true);
 		frmCurrentGroup.setResizable(false);
 		frmCurrentGroup.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/images/black.png"))));
 		frmCurrentGroup.setTitle("Current Group");

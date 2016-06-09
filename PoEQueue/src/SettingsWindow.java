@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
+import javax.swing.JOptionPane;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -68,6 +69,7 @@ public class SettingsWindow {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(MainWindow.currentGroup == false) {
 				String temp = txtUsername.getText();
 				if(temp.contains(";")) {
 					temp.replaceAll(";", ",");
@@ -75,7 +77,11 @@ public class SettingsWindow {
 				MainWindow.username = temp;
 				MainWindow.SaveInfo(temp);
 				frmSettings.dispose();
+			} else {
+				JOptionPane.showMessageDialog(frmSettings, "You must leave the group before changing your username.");
+				frmSettings.dispose();
 			}
+		}
 		});
 		GroupLayout groupLayout = new GroupLayout(frmSettings.getContentPane());
 		groupLayout.setHorizontalGroup(
