@@ -1,4 +1,5 @@
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -127,7 +128,7 @@ public class MainWindow {
 	
 	Point originLocation = new Point(0,0);
 	
-	public static String version = "1.22";
+	public static String version = "1.24";
 	
 	/**
 	 * Launch the application.
@@ -633,6 +634,30 @@ public class MainWindow {
 			}
 		});
 		mnHelp.add(mntmAbout);
+		
+		JMenuItem mntmHowTo = new JMenuItem("How To");
+		mntmHowTo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				  try {
+				        Desktop.getDesktop().browse(new URL("https://github.com/blissjonathan/PoEQueue/wiki/How-to-Guide").toURI());
+				    } catch (Exception e) {
+				        e.printStackTrace();
+				    }
+			}
+		});
+		mnHelp.add(mntmHowTo);
+		
+		JMenuItem mntmProvideFeedback = new JMenuItem("Provide Feedback");
+		mntmProvideFeedback.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+			        Desktop.getDesktop().browse(new URL("https://github.com/blissjonathan/PoEQueue/issues").toURI());
+			    } catch (Exception e1) {
+			        e1.printStackTrace();
+			    }
+			}
+		});
+		mnHelp.add(mntmProvideFeedback);
 	}
 
 	public static void Update(ResultSet _rs) {

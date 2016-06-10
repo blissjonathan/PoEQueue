@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.MatteBorder;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -107,10 +108,14 @@ public class NewGroupWindow {
 	 */
 	private void initialize() {
 		frmNewGroup = new JFrame();
+		frmNewGroup.getContentPane().setBackground(new Color(0, 153, 255));
 		frmNewGroup.setTitle("New Group");
 		frmNewGroup.setResizable(false);
 		frmNewGroup.setBounds(100, 100, 370, 147);
 		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frmNewGroup.setLocation(dim.width/2-frmNewGroup.getSize().width/2, dim.height/2-frmNewGroup.getSize().height/2);
 		
 		txtDescription = new JTextField(15);
 		txtDescription.addKeyListener(new KeyAdapter() {

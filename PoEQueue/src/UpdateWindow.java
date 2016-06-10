@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 
 public class UpdateWindow {
@@ -63,21 +66,44 @@ public class UpdateWindow {
 		frmUpdate.setType(Type.POPUP);
 		frmUpdate.setTitle("Update!");
 		frmUpdate.setResizable(false);
-		frmUpdate.setBounds(100, 100, 311, 207);
+		frmUpdate.setBounds(100, 100, 269, 199);
 		frmUpdate.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmUpdate.setLocation(dim.width/2-frmUpdate.getSize().width/2, dim.height/2-frmUpdate.getSize().height/2);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{31, 47, 39, 25, 91, 0};
+		gridBagLayout.rowHeights = new int[]{14, 14, 38, 14, 20, 23, 14, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		frmUpdate.getContentPane().setLayout(gridBagLayout);
 		
 		JLabel lblANewVersion = new JLabel("A new version of PoE Queue has been released!");
+		GridBagConstraints gbc_lblANewVersion = new GridBagConstraints();
+		gbc_lblANewVersion.anchor = GridBagConstraints.NORTHWEST;
+		gbc_lblANewVersion.insets = new Insets(0, 0, 5, 0);
+		gbc_lblANewVersion.gridwidth = 4;
+		gbc_lblANewVersion.gridx = 1;
+		gbc_lblANewVersion.gridy = 0;
+		frmUpdate.getContentPane().add(lblANewVersion, gbc_lblANewVersion);
 		
 		JLabel lblVersion = new JLabel("Version:");
+		GridBagConstraints gbc_lblVersion = new GridBagConstraints();
+		gbc_lblVersion.anchor = GridBagConstraints.NORTHWEST;
+		gbc_lblVersion.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVersion.gridx = 2;
+		gbc_lblVersion.gridy = 1;
+		frmUpdate.getContentPane().add(lblVersion, gbc_lblVersion);
 		
 		JLabel lblVersionnum = new JLabel(updateVersion);
+		GridBagConstraints gbc_lblVersionnum = new GridBagConstraints();
+		gbc_lblVersionnum.anchor = GridBagConstraints.NORTHWEST;
+		gbc_lblVersionnum.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVersionnum.gridx = 3;
+		gbc_lblVersionnum.gridy = 1;
+		frmUpdate.getContentPane().add(lblVersionnum, gbc_lblVersionnum);
 		
-		JLabel lblGetItAt = new JLabel("Get it at:");
-		
-		JButton btnOk = new JButton("OK");
+		JButton btnOk = new JButton("Update Now");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -108,48 +134,53 @@ public class UpdateWindow {
 			}
 		});
 		
+		JButton btnOk_1 = new JButton("OK");
+		btnOk_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmUpdate.dispose();
+				System.exit(0);
+			}
+		});
+		
+		JLabel lblGetItAt = new JLabel("Get it at:");
+		GridBagConstraints gbc_lblGetItAt = new GridBagConstraints();
+		gbc_lblGetItAt.anchor = GridBagConstraints.NORTHEAST;
+		gbc_lblGetItAt.insets = new Insets(0, 0, 5, 5);
+		gbc_lblGetItAt.gridwidth = 2;
+		gbc_lblGetItAt.gridx = 2;
+		gbc_lblGetItAt.gridy = 3;
+		frmUpdate.getContentPane().add(lblGetItAt, gbc_lblGetItAt);
+		
 		txtUrl = new JTextField();
 		txtUrl.setText(updateURL);
 		txtUrl.setEditable(false);
 		txtUrl.setColumns(10);
-		GroupLayout groupLayout = new GroupLayout(frmUpdate.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(115)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnOk)
-								.addComponent(lblGetItAt)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(88)
-							.addComponent(lblVersion)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblVersionnum))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(31)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(txtUrl)
-								.addComponent(lblANewVersion, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-					.addContainerGap(40, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(lblANewVersion)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblVersion)
-						.addComponent(lblVersionnum))
-					.addGap(38)
-					.addComponent(lblGetItAt)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(txtUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-					.addComponent(btnOk)
-					.addContainerGap())
-		);
-		frmUpdate.getContentPane().setLayout(groupLayout);
+		GridBagConstraints gbc_txtUrl = new GridBagConstraints();
+		gbc_txtUrl.anchor = GridBagConstraints.NORTH;
+		gbc_txtUrl.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtUrl.insets = new Insets(0, 0, 5, 0);
+		gbc_txtUrl.gridwidth = 5;
+		gbc_txtUrl.gridx = 0;
+		gbc_txtUrl.gridy = 4;
+		frmUpdate.getContentPane().add(txtUrl, gbc_txtUrl);
+		GridBagConstraints gbc_btnOk_1 = new GridBagConstraints();
+		gbc_btnOk_1.anchor = GridBagConstraints.NORTHWEST;
+		gbc_btnOk_1.insets = new Insets(0, 0, 5, 5);
+		gbc_btnOk_1.gridx = 1;
+		gbc_btnOk_1.gridy = 5;
+		frmUpdate.getContentPane().add(btnOk_1, gbc_btnOk_1);
+		GridBagConstraints gbc_btnOk = new GridBagConstraints();
+		gbc_btnOk.anchor = GridBagConstraints.NORTHWEST;
+		gbc_btnOk.insets = new Insets(0, 0, 5, 0);
+		gbc_btnOk.gridx = 4;
+		gbc_btnOk.gridy = 5;
+		frmUpdate.getContentPane().add(btnOk, gbc_btnOk);
+		
+		JLabel lblwindowsOnly = new JLabel("(Windows Only)");
+		GridBagConstraints gbc_lblwindowsOnly = new GridBagConstraints();
+		gbc_lblwindowsOnly.anchor = GridBagConstraints.NORTH;
+		gbc_lblwindowsOnly.gridx = 4;
+		gbc_lblwindowsOnly.gridy = 6;
+		frmUpdate.getContentPane().add(lblwindowsOnly, gbc_lblwindowsOnly);
 	}
 }
