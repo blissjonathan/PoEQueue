@@ -128,7 +128,7 @@ public class MainWindow {
 	
 	Point originLocation = new Point(0,0);
 	
-	public static String version = "1.24";
+	public static String version = "1.25";
 	
 	/**
 	 * Launch the application.
@@ -727,7 +727,7 @@ public class MainWindow {
 			Image grayIcon = Toolkit.getDefaultToolkit().createImage(producer); 
 			menuJoin.setIcon(new ImageIcon(grayIcon));
 			menuJoin.repaint();
-			menuLeave.setIcon(new ImageIcon("./resources/leave.png"));
+			menuLeave.setIcon(new ImageIcon(MainWindow.class.getResource("/images/leave.png")));
 			
 			CurrentGroupWindow.createWindow(selectedGroup);
 			
@@ -760,7 +760,7 @@ public class MainWindow {
 				if(currentGroup == true) {
 					CurrentGroupWindow.closeFrame();
 					
-					menuJoin.setIcon(new ImageIcon("./resources/join.png"));
+					menuJoin.setIcon(new ImageIcon(MainWindow.class.getResource("/images/join.png")));
 					menuJoin.repaint();
 					
 					ImageFilter filter = new GrayFilter(true, 50);  
