@@ -110,6 +110,7 @@ public class UpdateWindow {
 					}			
 				} else {
 					
+					File file=new File("./update.sh");
 					FileOutputStream fos;
 					try {
 						fos = new FileOutputStream(file);
@@ -123,6 +124,7 @@ public class UpdateWindow {
 						dos.writeBytes(newLine);
 						dos.writeBytes("curl -O " + updateURL); 
 						dos.writeBytes(newLine);
+						dos.writeBytes("java -jar ./PoEQueue.jar");
 						dos.writeBytes(newLine);
 						dos.writeBytes("rm -- \"$0\" && exit 0");
 
