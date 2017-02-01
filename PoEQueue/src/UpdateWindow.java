@@ -128,7 +128,7 @@ public class UpdateWindow {
 						dos.writeBytes(newLine);
 						dos.writeBytes("rm -- \"$0\" && exit 0");
 
-						Runtime.getRuntime().exec("chmod u+x /update.sh"); 
+						Runtime.getRuntime().exec("chmod u+x ./update.sh"); 
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
