@@ -128,7 +128,7 @@ public class MainWindow {
 	
 	Point originLocation = new Point(0,0);
 	
-	public static String version = "1.25";
+	public static String version = "1.30";
 	
 	/**
 	 * Launch the application.
