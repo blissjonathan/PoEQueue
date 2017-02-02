@@ -128,7 +128,7 @@ public class MainWindow {
 	
 	Point originLocation = new Point(0,0);
 	
-	public static String version = "1.30";
+	public static String version = "1.31";
 	
 	/**
 	 * Launch the application.
@@ -277,8 +277,9 @@ public class MainWindow {
 		scrollPane.setPreferredSize(new Dimension(419, 435));
 		scrollPane.setOpaque(false);
 		JLabel lblTypeDescriptionDate = new JLabel("Type| Description| Date| # of members|  League| ID:Leader", JLabel.LEFT);
-		lblTypeDescriptionDate.setBackground(new Color(255, 204, 102));
-		lblTypeDescriptionDate.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		lblTypeDescriptionDate.setForeground(Color.BLACK);
+		lblTypeDescriptionDate.setBackground(Color.YELLOW);
+		lblTypeDescriptionDate.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(255, 255, 0), new Color(255, 255, 0), Color.YELLOW, Color.YELLOW));
 		scrollPane.setColumnHeaderView(lblTypeDescriptionDate);
 		
 		qList = new JList();
@@ -478,9 +479,14 @@ public class MainWindow {
 		menuBar.add(menuNewGroup);
 		
 		JMenu menuSettings = new JMenu("");
+		menuSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		menuSettings.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
+				System.out.println("Settings pressed");
 				if(username == null) {
 					SettingsWindow.createWindow("Username");
 				}

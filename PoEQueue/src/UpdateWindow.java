@@ -64,15 +64,17 @@ public class UpdateWindow {
 	private void initialize() {
 		String os = System.getProperty("os.name");
 		System.out.println("Using operating System: " + os);
+		MainWindow.frmPoeQueue.hide();
 		frmUpdate = new JFrame();
-		frmUpdate.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmUpdate.setResizable(false);
+		frmUpdate.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmUpdate.getContentPane().setBackground(SystemColor.inactiveCaption);
 		frmUpdate.setAlwaysOnTop(true);
 		frmUpdate.setType(Type.POPUP);
 		frmUpdate.setTitle("Update!");
-		frmUpdate.setBounds(100, 100, 269, 199);
-		frmUpdate.setPreferredSize(new Dimension(269,199));
+//		frmUpdate.setBounds(100, 100, 269, 199);
+//		frmUpdate.setPreferredSize(new Dimension(266, 103));
+		frmUpdate.setSize(350,130);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmUpdate.setLocation(dim.width/2-frmUpdate.getSize().width/2, dim.height/2-frmUpdate.getSize().height/2);
@@ -81,8 +83,8 @@ public class UpdateWindow {
 		
 		JLabel lblVersion = new JLabel("Version:");
 		
-		JLabel lblVersionnum = new JLabel(updateVersion);
-		
+		JLabel lblVersionnum = new JLabel("VNUM");
+		lblVersionnum.setText(updateVersion);
 		JButton btnOk = new JButton("Update");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -138,37 +140,35 @@ public class UpdateWindow {
 				System.exit(0);
 			}
 		});
-		
-		JLabel lblwindowsOnly = new JLabel("");
 		GroupLayout groupLayout = new GroupLayout(frmUpdate.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblVersionnum)
-						.addComponent(lblwindowsOnly))
-					.addGap(263))
+					.addGap(87)
+					.addComponent(lblVersion)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblVersionnum)
+					.addGap(43))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(lblANewVersion)
-					.addContainerGap())
+					.addGap(30)
+					.addComponent(lblANewVersion, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGap(32))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblVersion)
-						.addComponent(btnOk))
-					.addGap(113))
+					.addGap(106)
+					.addComponent(btnOk)
+					.addContainerGap(121, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblVersionnum)
-						.addComponent(lblwindowsOnly)
-						.addComponent(lblANewVersion))
-					.addGap(18)
-					.addComponent(lblVersion)
-					.addGap(31)
+					.addComponent(lblANewVersion, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnOk)
-					.addGap(70))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblVersionnum)
+						.addComponent(lblVersion))
+					.addGap(99))
 		);
 		frmUpdate.getContentPane().setLayout(groupLayout);
 	}

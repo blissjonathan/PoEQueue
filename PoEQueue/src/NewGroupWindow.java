@@ -33,6 +33,8 @@ import com.mysql.jdbc.Statement;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -75,7 +77,7 @@ public class NewGroupWindow {
 	 private String league = "Standard";
 	 
 	 public boolean isLeader = false;
-	 
+	 public static int isOpen = 0;
 	 JSpinner spinner;
 
 	/**
@@ -85,9 +87,11 @@ public class NewGroupWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					if(frmNewGroup == null) {
+					if(isOpen == 0) {
 					NewGroupWindow window = new NewGroupWindow();
 					window.frmNewGroup.setVisible(true);
+					} else {
+						System.out.println("Failed to open NewGroupWindow");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -101,6 +105,7 @@ public class NewGroupWindow {
 	 */
 	public NewGroupWindow() {
 		initialize();
+		isOpen = 1;
 	}
 
 	/**
@@ -112,7 +117,13 @@ public class NewGroupWindow {
 		frmNewGroup.setTitle("New Group");
 		frmNewGroup.setResizable(false);
 		frmNewGroup.setBounds(100, 100, 370, 147);
-		frmNewGroup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		frmNewGroup.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+            	isOpen = 0;
+                frmNewGroup.dispose();
+            }
+        });
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frmNewGroup.setLocation(dim.width/2-frmNewGroup.getSize().width/2, dim.height/2-frmNewGroup.getSize().height/2);
