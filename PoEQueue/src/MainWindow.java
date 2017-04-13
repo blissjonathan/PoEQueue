@@ -128,7 +128,7 @@ public class MainWindow {
 	
 	Point originLocation = new Point(0,0);
 	
-	public static String version = "1.31";
+	public static String version = "1.4";
 	
 	/**
 	 * Launch the application.
@@ -155,7 +155,10 @@ public class MainWindow {
 					    // handle exception
 					}
 
-					URL update = new URL("https://dl.dropboxusercontent.com/u/82755681/PoEQueue/update.txt");
+					
+					URL update = new URL("https://poequeue.000webhostapp.com/update.txt");
+					//https://poequeue.000webhostapp.com/index.html
+					
 					Scanner sUpdate = new Scanner(update.openStream());
 					String checkUpdate = sUpdate.next();
 					StringTokenizer st = new StringTokenizer(checkUpdate,"|");
