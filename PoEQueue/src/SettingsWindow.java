@@ -96,9 +96,11 @@ public class SettingsWindow {
 				}
 				MainWindow.username = temp;
 				MainWindow.SaveInfo(temp);
+				isOpen=0;
 				frmSettings.dispose();
 			} else {
 				JOptionPane.showMessageDialog(frmSettings, "You must leave the group before changing your username.");
+				isOpen=0;
 				frmSettings.dispose();
 			}
 		}
